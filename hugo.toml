@@ -1,0 +1,46 @@
+baseURL = "https://vyasr.com/"
+languageCode = "en-us"
+title = "Vyas Ramasubramani"
+enableRobotsTXT = true
+
+[permalinks]
+  page = "/:slug/"
+
+[menu]
+  [[menu.main]]
+    name = "About Me"
+    url = "/"
+    weight = 10
+  [[menu.main]]
+    name = "Research"
+    url = "/research/"
+    weight = 20
+  [[menu.main]]
+    name = "Publications"
+    url = "/publications/"
+    parent = "Research"
+    weight = 21
+  [[menu.main]]
+    name = "Presentations"
+    url = "/presentations/"
+    parent = "Research"
+    weight = 22
+  [[menu.main]]
+    name = "Software"
+    url = "/software-development/"
+    weight = 30
+  [[menu.main]]
+    name = "CV"
+    url = "/cv/"
+    weight = 40
+
+[params]
+  description = "Computational scientist and software developer."
+  copyright = "Copyright 2026 — Vyas Ramasubramani. All rights reserved. Icons courtesy of Dave Gandy."
+  profileImage = "/images/IMG_3527-min-1.jpg"
+  cvFile = "/files/cv.pdf"
+  cvAltFile = "/files/cv-1.pdf"
+  email = "vyas.ramasubramani@gmail.com"
+  github = "https://github.com/vyasr"
+  linkedin = "https://www.linkedin.com/in/vyas-ramasubramani-57689445/"
+  scholar = "https://scholar.google.com/citations?user=vyLxpbkAAAAJ&hl=en&oi=ao"
