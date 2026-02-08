@@ -1,0 +1,3 @@
+[submodule "external/awesome-cv"]
+	path = external/awesome-cv
+	url = https://github.com/vyasr/Awesome-CV.git
