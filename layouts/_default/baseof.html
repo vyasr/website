@@ -12,10 +12,12 @@
     />
     <link rel="stylesheet" href="/css/main.css" />
   </head>
-  <body>
+  <body class="{{ if .IsHome }}home{{ end }}">
     {{ partial "site-header.html" . }}
     <main class="site-main">
-      {{ block "main" . }}{{ end }}
+      <div class="container">
+        {{ block "main" . }}{{ end }}
+      </div>
     </main>
     {{ partial "site-footer.html" . }}
   </body>

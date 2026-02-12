@@ -3,11 +3,34 @@ title: "Software"
 hideTitle: true
 ---
 
-Although I’ve worked with numerous programming languages, these days I spend most of my time working in Python and C++. As part of my PhD research I became actively involved in the development of a great deal of scientific software, some of which I continue to remain involved with. Two of the biggest projects that I help maintain are [signac](http://signac.io) and [freud](http://freud.readthedocs.io), both of which I have presented at SciPy:
+Although I've worked with numerous programming languages, these days I spend most of my time working in Python and C++. As part of my PhD research I became actively involved in the development of a great deal of scientific software, some of which I continue to remain involved with. Two of the biggest projects that I help maintain are [signac](http://signac.io) and [freud](http://freud.readthedocs.io), both of which I have presented at SciPy:
 
-My colleague Bradley Dice and I presenting freud at SciPy 2019
-
-Me presenting freud at SciPy 2018
+<div class="video-grid">
+  <div class="video-card">
+    <div class="video-embed">
+      <iframe
+        src="https://www.youtube.com/embed/D0LWh1BzPRQ"
+        title="freud at SciPy 2019"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+    <p class="video-caption">My colleague Bradley Dice and I presenting freud at SciPy 2019</p>
+  </div>
+  <div class="video-card">
+    <div class="video-embed">
+      <iframe
+        src="https://www.youtube.com/embed/CCKQH1M2uR4"
+        title="freud at SciPy 2018"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+    <p class="video-caption">Me presenting freud at SciPy 2018</p>
+  </div>
+</div>
 
 As a computational scientist first and foremost, I believe in tying software development as directly to specific applications as possible. My colleague Simon Adorf and I published [a paper](https://ieeexplore.ieee.org/document/8558687) on this topic in [Computing in Science & Engineering](https://www.computer.org/csdl/magazine/cs), and more recently we wrote a [blog post](https://bssw.io/blog_posts/the-lazy-approach-to-developing-scientific-research-software) providing a high level discussion of our approach. With this mentality, I have also developed a few small, self-contained Python packages with clear applications, the [rowan](http://rowan.readthedocs.io/) package for quaternion manipulation and the [coxeter](http://coxeter.readthedocs.io/) package for working with geometric data, particularly polytopes in two and three dimensions.
 

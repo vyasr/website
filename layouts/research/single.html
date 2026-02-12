@@ -1,0 +1,33 @@
+{{ define "main" }}
+  <article class="content">
+    <div class="research-layout">
+      <div class="research-body">
+        {{ .Content }}
+      </div>
+      <div class="research-aside">
+        {{ if .Params.youtubeId }}
+          <div class="video-embed">
+            <iframe
+              src="https://www.youtube.com/embed/{{ .Params.youtubeId }}"
+              title="TEDx Talk"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          </div>
+        {{ end }}
+        {{ if .Params.tweetUrl }}
+          <blockquote class="twitter-tweet">
+            <p lang="en" dir="ltr">
+              {{ .Params.tweetText }}
+              {{ with .Params.tweetMediaUrl }}<a href="{{ . }}">pic.twitter.com/9YjIxe9Mko</a>{{ end }}
+            </p>
+            &mdash; {{ .Params.tweetAuthor }}
+            <a href="{{ .Params.tweetUrl }}">{{ .Params.tweetDate }}</a>
+          </blockquote>
+          <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        {{ end }}
+      </div>
+    </div>
+  </article>
+{{ end }}
