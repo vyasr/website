@@ -5,4 +5,6 @@ hideTitle: true
 
 You can download my CV [here](/files/cv.pdf).
 
-[cv-1](/files/cv-1.pdf)
+<div class="cv-embed">
+  <iframe src="/files/cv.pdf" title="CV PDF" loading="lazy"></iframe>
+</div>
