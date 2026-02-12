@@ -3,8 +3,6 @@ title: "Presentations"
 hideTitle: true
 ---
 
-This page is generated from the CV bibliography. Do not edit manually.
-
 ## 2019
 
 - Bradley D. Dice, Vyas Ramasubramani, Eric S. Harper, Matthew P. Spellings, Joshua A. Anderson, Sharon C. Glotzer "Freud: Powerful particle simulation analysis tools for machine learning and materials design." Materials Research Society 2019

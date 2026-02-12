@@ -3,8 +3,6 @@ title: "Publications"
 hideTitle: true
 ---
 
-This page is generated from the CV bibliography. Do not edit manually.
-
 ## 2020
 
 - Ramasubramani, Vyas, Vo, Thi, Anderson, Joshua A., Glotzer, Sharon C. "A mean-field approach to simulating anisotropic particles." The Journal of Chemical Physics 2020 [link](https://doi.org/10.1063/5.0019735)

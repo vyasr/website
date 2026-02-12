@@ -198,8 +198,8 @@ def group_entries(entries):
     return grouped
 
 
-def render_markdown(title, entries, note):
-    lines = ["---", f"title: \"{title}\"", "hideTitle: true", "---", "", note, ""]
+def render_markdown(title, entries):
+    lines = ["---", f"title: \"{title}\"", "hideTitle: true", "---", ""]
     grouped = group_entries(entries)
     years = sorted(grouped.keys(), key=lambda y: int(y) if y.isdigit() else 0, reverse=True)
     for year in years:
@@ -211,12 +211,12 @@ def render_markdown(title, entries, note):
     return "\n".join(lines).strip() + "\n"
 
 
-def build_page(source_path, title, allow_types, allow_authors, output_path, note):
+def build_page(source_path, title, allow_types, allow_authors, output_path):
     text = Path(source_path).read_text(encoding="utf-8")
     entries = parse_entries(text)
     filtered = [entry for entry in entries if entry_matches(entry, allow_types, allow_authors)]
     filtered.sort(key=entry_sort_key, reverse=True)
-    output = render_markdown(title, filtered, note)
+    output = render_markdown(title, filtered)
     Path(output_path).write_text(output, encoding="utf-8")
 
 
@@ -262,15 +262,12 @@ def main():
         "Glaser",
     ]
 
-    note = "This page is generated from the CV bibliography. Do not edit manually."
-
     build_page(
         publications_bib,
         "Publications",
         allow_publications,
         publication_authors,
         output_root / "publications" / "index.md",
-        note,
     )
     build_page(
         presentations_bib,
@@ -278,7 +275,6 @@ def main():
         allow_presentations,
         presentation_authors,
         output_root / "presentations" / "index.md",
-        note,
     )
 
 
