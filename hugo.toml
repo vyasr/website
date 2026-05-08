@@ -20,25 +20,29 @@ ignoreLogs = ["warning-goldmark-raw-html"]
   [[menu.main]]
     name = "Research"
     url = "/research/"
-    weight = 20
+    weight = 30
   [[menu.main]]
     name = "Publications"
     url = "/publications/"
     parent = "Research"
-    weight = 21
+    weight = 31
   [[menu.main]]
     name = "Presentations"
     url = "/presentations/"
     parent = "Research"
-    weight = 22
+    weight = 32
   [[menu.main]]
     name = "Software"
     url = "/software-development/"
-    weight = 30
+    weight = 20
   [[menu.main]]
     name = "CV"
     url = "/cv/"
     weight = 40
+  [[menu.main]]
+    name = "Bio"
+    url = "/bio/"
+    weight = 45
 
 [params]
   description = "Computational scientist and software developer."
