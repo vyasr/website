@@ -9,7 +9,7 @@ I spend most of my time working in Python, C++, and CUDA, with a healthy dose of
   <div class="video-card">
     <div class="video-embed">
       <iframe
-        src="https://youtu.be/u74pWKndzqE?si=Sgl403k-iK6e-6mM"
+        src="https://www.youtube.com/embed/u74pWKndzqE?si=Sgl403k-iK6e-6mM"
         title="Polars SF Meetup"
         frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -20,7 +20,7 @@ I spend most of my time working in Python, C++, and CUDA, with a healthy dose of
   <div class="video-card">
     <div class="video-embed">
       <iframe
-        src="https://youtu.be/2omzi5S6WV4?si=PTih_T5rBDQl-oRg"
+        src="https://www.youtube.com/embed/2omzi5S6WV4?si=PTih_T5rBDQl-oRg"
         title="DataFrames at SciPy 2025"
         frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
