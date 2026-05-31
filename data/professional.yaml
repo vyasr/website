@@ -1,0 +1,1176 @@
+schema_version: '1.0'
+personal_info:
+  name: Vyas Ramasubramani
+  email: vyas.ramasubramani@gmail.com
+  phone: (+1) 408-421-2162
+  website: vyasr.com
+  github: vyasr
+  linkedin: vyas-ramasubramani
+  location:
+cv_config:
+  citations_mode: selectedpubs
+  selected_publications:
+    - Ramasubramani2020b
+    - Ramasubramani2020
+    - Dice_2019
+    - simon2019
+    - vyas_ramasubramani-proc-scipy-2018
+    - adorf2018
+    - ADORF2018220
+    - Sinha:2014aa
+education:
+  - institution: University of Michigan
+    degree: Ph.D. in Chemical Engineering and Scientific Computing
+    area: Chemical Engineering
+    start: '2015'
+    end: '2020'
+    location: ''
+    advisor:
+    details:
+    display:
+      compact: false
+      extended: true
+      outdated: false
+    compact_override:
+      institution: University of Michigan
+      degree: Ph.D. in Chemical Engineering and Scientific Computing
+      area: Chemical Engineering
+      start: '2015'
+      end: '2020'
+      location: ''
+      advisor:
+      details:
+      display:
+        compact: true
+        extended: true
+        outdated: false
+      compact_override:
+      notes:
+    notes:
+  - institution: University of Michigan
+    degree: M.S. in Chemical Engineering
+    area: Chemical Engineering
+    start: '2015'
+    end: '2017'
+    location: ''
+    advisor:
+    details:
+    display:
+      compact: false
+      extended: true
+      outdated: false
+    compact_override:
+    notes:
+  - institution: Princeton University
+    degree: B.S.E. in Chemical Engineering
+    area: Chemical Engineering
+    start: '2009'
+    end: '2013'
+    location: ''
+    advisor:
+    details: 'Minors: Quantitative and Computational Biology, Applications of Computing'
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    compact_override:
+    notes:
+  - institution: Lynbrook High School
+    degree: ''
+    area: ''
+    start: '2005'
+    end: '2009'
+    location: ''
+    advisor:
+    details: 'Honors: Valedictorian, Varsity Tennis Captain, National Honor Society,
+      Center for Talented Youth: Grand Scholar, AP Scholar with Distinction'
+    display:
+      compact: true
+      extended: true
+      outdated: true
+    compact_override:
+    notes:
+  - institution: Foothill College
+    degree: ''
+    area: ''
+    start: '2008'
+    end: '2008'
+    location: ''
+    advisor:
+    details: 'Courses: Introduction to Nanotechnology'
+    display:
+      compact: true
+      extended: true
+      outdated: true
+    compact_override:
+    notes:
+  - institution: Johns Hopkins University
+    degree: ''
+    area: ''
+    start: 2005-2007
+    end: ''
+    location: ''
+    advisor:
+    details: 'Courses: Introduction to C Programming, Algorithms and Techniques in
+      C, Introduction to Java Programming, AP Biology'
+    display:
+      compact: true
+      extended: true
+      outdated: true
+    compact_override:
+    notes:
+research_experience:
+  - organization: University of Michigan - Glotzer Group
+    role: Research Assistant
+    start: Oct 2015
+    end: Present
+    location: ''
+    summary:
+    bullets:
+      - Developed a mean-field simulation technique for the molecular dynamics 
+        of anisotropic particles and optimized it for modern GPUs.
+      - Employed a novel coarse-graining approach to explain the assembly of 
+        supercharged protein oligomers.
+      - Built ML models and deep neural networks using scikit-learn and 
+        TensorFlow to identify drivers of protein crystallization.
+      - Developed and implemented models of implicit solvation including 
+        parallelization via MPI and OpenMP.
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+    latex_overrides:
+  - organization: Princeton University - Prud'homme Lab
+    role: Thesis Researcher
+    start: Sep 2012
+    end: Jun 2013
+    location: ''
+    summary:
+    bullets:
+      - Characterized phase separation in specific polymer blends to ameliorate 
+        effects of depletion flocculation.
+      - Developed nanoparticles and gel microparticles for incorporation into a 
+        targeted drug delivery system for lung cancer.
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+    latex_overrides:
+  - organization: Academy of Sciences of the Czech Republic - Ettrich Lab
+    role: Undergraduate Researcher
+    start: Jul 2012
+    end: Jun 2013
+    location: ''
+    summary:
+    bullets:
+      - Used all-atom molecular dynamics simulations to discover the physical 
+        origin of the functional transition in the EcoR124i transcription 
+        factor.
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+    latex_overrides:
+  - organization: Princeton University - Brynildsen Lab
+    role: Undergraduate Researcher
+    start: Sep 2012
+    end: Jun 2013
+    location: ''
+    summary:
+    bullets:
+      - Identified key reactions in the E. coli metabolome associated with cell 
+        death from antibiotics.
+      - Helped build a model to determine whether antibiotics kill primarily by 
+        binding to specific targets or by the generation of deleterious reactive
+        oxygen species.
+    display:
+      compact: true
+      extended: true
+      outdated: true
+    notes:
+    latex_overrides:
+  - organization: Princeton University- Stone Lab
+    role: Undergraduate Researcher
+    start: Feb 2012
+    end: Jun 2012
+    location: ''
+    summary:
+    bullets:
+      - Developed microfluidic chips to apply stresses to biological membranes.
+      - Studied how physical stresses relate to surface area regulation in 
+        bilipid membranes.
+    display:
+      compact: true
+      extended: true
+      outdated: true
+    notes:
+    latex_overrides:
+  - organization: Princeton University - Lewis-Sigler Institute
+    role: Undergraduate Researcher
+    start: Sep 2011
+    end: Jan 2012
+    location: ''
+    summary:
+    bullets:
+      - Characterized an untested system for control of gene expression under 
+        Professor Botstein.
+      - Compared the effectiveness of three different systems for controlling 
+        gene expression.
+    display:
+      compact: true
+      extended: true
+      outdated: true
+    notes:
+    latex_overrides:
+  - organization: Princeton University - Shvartsman Lab
+    role: Undergraduate Researcher
+    start: Sep 2010
+    end: Jan 2011
+    location: ''
+    summary:
+    bullets:
+      - Built a simulation of bistable reaction networks using MATLAB.
+    display:
+      compact: true
+      extended: true
+      outdated: true
+    notes:
+    latex_overrides:
+  - organization: Stanford University - Heller Lab
+    role: Undergraduate Researcher
+    start: Jul 2010
+    end: Sep 2010
+    location: ''
+    summary:
+    bullets:
+      - Identified the transcription factors key to cochlear stem cell 
+        development in G. g. domesticus.
+      - Quantified nonzero protein expression in the developing otocyst.
+    display:
+      compact: true
+      extended: true
+      outdated: true
+    notes:
+    latex_overrides:
+  - organization: UC Santa Cruz - COSMOS
+    role: Undergraduate Researcher
+    start: Jul 2006
+    end: Sep 2006
+    location: ''
+    summary:
+    bullets:
+      - Proposed a project investigating the differential survival rates of 
+        different regional stocks of the Stellar Sea Lion (E. jubatus).
+      - Developed complete methodology and analyzed data for potential 
+        preliminary results.
+    display:
+      compact: true
+      extended: true
+      outdated: true
+    notes:
+    latex_overrides:
+work_experience:
+  - organization: NVIDIA
+    role: Senior Software Engineer
+    start: Mar 2020
+    end: Present
+    location: ''
+    summary:
+    bullets:
+      - Implemented critical algorithms to ensure Spark GPU outperforms Spark 
+        CPU on industry standard benchmarks in all cases.
+      - Spearheaded push to release packages on PyPI, including (re)writing 
+        CMake build systems and architecting new DevOps processes.
+      - Redesigned Python package internals for improved performance, 
+        robustness, and flexibility.
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+    latex_overrides:
+  - organization: D.C. Energy LLC
+    role: Senior Financial Analyst
+    start: Sep 2013
+    end: Jul 2015
+    location: ''
+    summary:
+    bullets:
+      - Increased trade profitability by combining powerflow analysis and 
+        various financial metrics to enhance automated trade optimization.
+      - Modernized the company's data infrastructure by improving web scraping 
+        frameworks, database design, and analytical algorithms.
+      - Built web tools using R, PHP, JavaScript, and MySQL to aid technical and
+        fundamental market analysis.
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+    latex_overrides:
+  - organization: Priate Tutor
+    role: Tutor
+    start: Sep 2008
+    end: Jun 2009
+    location: ''
+    summary:
+    bullets:
+      - Tutored 3 siblings three times a week
+      - Raised one tutee's grade in geometry from a C to an A
+    display:
+      compact: true
+      extended: true
+      outdated: true
+    notes:
+    latex_overrides:
+  - organization: Camp Galileo
+    role: Summer Intern
+    start: Jul 2008
+    end: Sep 2008
+    location: ''
+    summary:
+    bullets:
+      - Led summer students through their day and managed their schedules
+      - Helped teach students and aided in the execution of high level art and 
+        science projects
+    display:
+      compact: true
+      extended: true
+      outdated: true
+    notes:
+    latex_overrides:
+skills:
+  - category: Languages
+    items:
+      - 'expert: Python'
+      - C++
+      - 'CUDA advanced: C'
+      - R
+      - MySQL
+      - 'MATLAB intermediate: Rust'
+      - Java
+      - PHP
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    latex_overrides:
+  - category: Tools & Frameworks
+    items:
+      - 'Data Science & ML: scikit-learn'
+      - TensorFlow
+      - pandas
+      - NumPy
+      - data.table
+      - 'dplyr Parallelism: MPI'
+      - OpenMP
+      - TBB Build systems CMake
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    latex_overrides:
+projects:
+  - name: cuDF
+    url:
+    summary: Developer
+    bullets:
+      - Launched redesign of the Python API and led team push to implement a 
+        more flexible and performant API.
+      - Built out new benchmarking frameworks and led associated effort to 
+        optimize Python, C++, and CUDA code.
+      - Rewrote build systems to support building wheels to make our package 
+        available to much wider audiences.
+      - Implemented crucial algorithms to support accelerating TPC-DS queries in
+        the Spark GPU plugin.
+    technologies: []
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+    latex_overrides:
+  - name: signac framework (github.com/glotzerlab/signac)
+    url:
+    summary: Lead Developer
+    bullets:
+      - Co-led development of a NumFOCUS-affiliated project for data and 
+        workflow management in Python.
+      - Enabled flexible, easy-to-use storage mechanism for research data in 
+        computational science and machine learning.
+      - Drove development of a new, compact API for defining complex workflows.
+    technologies: []
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+    latex_overrides:
+      name: signac framework ({\tiny github.com/glotzerlab/signac})
+  - name: freud (github.com/glotzerlab/freud)
+    url:
+    summary: Lead Developer
+    bullets:
+      - Co-led development of a C++ tool with Cython-generated Python bindings 
+        for fast, TBB-multithreaded analysis of molecular simulations.
+      - Spearheaded the creation of a standardized API achieving a high degree 
+        of flexibility and consistency.
+      - Achieved 5-15x performance improvements across the package as part of 
+        the 2.0 release.
+    technologies: []
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+    latex_overrides:
+      name: freud ({\tiny github.com/glotzerlab/freud})
+  - name: HOOMD-blue (github.com/glotzerlab/hoomd-blue)
+    url:
+    summary: Core Developer
+    bullets:
+      - Made various contributions to a general purpose, high-performance 
+        particle simulation toolkit for GPU-accelerated molecular dynamics and 
+        Monte Carlo simulations that is currently one of NVIDIA's official HPC 
+        benchmarks.
+      - Enabled bidirectional MPI communication to enable multi-body force 
+        fields in MPI simulations.
+      - Implemented the Gilbert-Johnson-Keerthi algorithm on CPUs and GPUs as 
+        part of an anisotropic pair potential.
+    technologies: []
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+    latex_overrides:
+      name: HOOMD-blue ({\tiny github.com/glotzerlab/hoomd-blue})
+  - name: rowan (github.com/glotzerlab/rowan)
+    url:
+    summary: Lead Developer
+    bullets:
+      - Wrote a Python package for quaternion mathematics.
+      - Completely mirrored NumPy broadcasting syntax to enable high-performance
+        operations on large arrays in pure Python.
+    technologies: []
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+    latex_overrides:
+      name: rowan ({\tiny github.com/glotzerlab/rowan})
+  - name: coxeter (github.com/glotzerlab/coxeter)
+    url:
+    summary: Lead Developer
+    bullets:
+      - Wrote a Python package for geometric calculations, particularly focusing
+        on polytopes in 2D and 3D.
+      - Developed and implemented a unified API for generating families of 
+        shapes via arbitrary parameterization.
+    technologies: []
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+    latex_overrides:
+      name: coxeter ({\tiny github.com/glotzerlab/coxeter})
+  - name: gsd (github.com/glotzerlab/gsd)
+    url:
+    summary: Contributor
+    bullets:
+      - Contributed to the specification of a generic binary file format for 
+        particle simulation data and the implementing C code.
+      - Improved memory mapping usage to allow efficient read-only access to 
+        very large files.
+    technologies: []
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+    latex_overrides:
+      name: gsd ({\tiny github.com/glotzerlab/gsd})
+  - name: TigerChat
+    url:
+    summary: Co-creator
+    bullets:
+      - Worked under Professor Brian Kernighan to develop a platform for 
+        XMPP-based communication over CAS networks.
+    technologies: []
+    display:
+      compact: true
+      extended: true
+      outdated: true
+    notes:
+    latex_overrides:
+honors:
+  - title: Beyster Computational Innovation Fellow
+    issuer: University of Michigan
+    location:
+    date: Jul 2019
+    summary:
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - title: 2nd Place
+    issuer: MICDE Symposium Poster Competition
+    location:
+    date: Apr 2019
+    summary:
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - title: Fellow
+    issuer: Michigan Institute for Computational Discovery & Engineering
+    location:
+    date: Sep 2018
+    summary:
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - title: Rackham Conference Travel Grant
+    issuer: University of Michigan
+    location:
+    date: June 2018
+    summary:
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - title: Departmental Nominee
+    issuer: Beyster Computational Innovation Fellowship
+    location:
+    date: Apr 2018
+    summary:
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - title: ChE Outstanding Service Award
+    issuer: Department of Chemical Engineering
+    location:
+    date: May 2017
+    summary:
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - title: 1st Place
+    issuer: USB Molecular Biophysics Symposium
+    location:
+    date: Aug 2012
+    summary:
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - title: National Merit Scholar
+    issuer: National Merit Scholarship Corporation
+    location:
+    date: May 2009
+    summary:
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - title: Valedictorian
+    issuer: Lynbrook High School
+    location:
+    date: May 2009
+    summary:
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - title: AP Scholar With Distinction
+    issuer: College Board
+    location:
+    date: May 2009
+    summary:
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - title: Presidential Scholarship Semifinalist
+    issuer: US Department of Education
+    location:
+    date: Apr 2009
+    summary:
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - title: Trustee Distinguished Scholarship (Declined)
+    issuer: Rice University
+    location:
+    date: Mar 2009
+    summary:
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - title: Century Scholarship (Declined)
+    issuer: Rice University
+    location:
+    date: Mar 2009
+    summary:
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - title: Grand Scholar
+    issuer: Center for Talented Youth
+    location:
+    date: Mar 2009
+    summary:
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+service_leadership:
+  - role: Board Member
+    organization: DEI Student Advisory Board
+    location:
+    date: Oct 2018 - Present
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - role: GSAC Representative
+    organization: Chemical Engineering Graduate Society
+    location:
+    date: Dec 2017 - Dec 2018
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - role: Council Member
+    organization: Student Engagement Advisory Council
+    location:
+    date: Jan 2017 - Apr 2017
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - role: Chair
+    organization: Chemical Engineering Graduate Recruiting
+    location:
+    date: Sept 2016 - Apr 2017
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - role: Fundraising Chair
+    organization: Chemical Engineering Graduate Symposium
+    location:
+    date: Sept 2016 - May 2017
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - role: Peer Mentor
+    organization: Chemical Engineering Peer Mentoring Program
+    location:
+    date: Jun 2016 - May 2017
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - role: Faculty/Staff Mentor
+    organization: UM Mentorship Program
+    location:
+    date: Jul 2016 - Jul 2019
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - role: Representative
+    organization: Chemical Engineering Graduate Society
+    location:
+    date: Dec 2015 - Dec 2016
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - role: Judge Recruiter
+    organization: Engineering Graduate Symposium
+    location:
+    date: May 2016 - Nov 2016
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - role: Session Chair
+    organization: Engineering Graduate Symposium
+    location:
+    date: May 2016 - Nov 2016
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - role: Intern
+    organization: Healing Horse Clinic, Bangalore
+    location:
+    date: May 2008 - Jul 2008
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - role: Member
+    organization: National Honor Society
+    location:
+    date: Nov 2007 - Jun 2009
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+teaching_experience:
+  - organization: University of Michigan, Ann Arbor
+    role: 'Graduate Student Instructor, ChE 341: Fluid Mechanics'
+    start: Jan 2019
+    end: May 2019
+    location: ''
+    summary:
+    bullets:
+      - Taught two sections of 30 students, including covering new material and 
+        solving problems, along with Professor Robert Ziff.
+      - Helped write exams and homework assignments throughout the semester.
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+    latex_overrides:
+  - organization: Princeton University
+    role: 'Course Developer, CBE 439: Quantitative Physiology, Tissue Design'
+    start: Jul 2011
+    end: Sep 2011
+    location: ''
+    summary:
+    bullets:
+      - Shaped the material taught in an elective course on quantitative 
+        physiology for Professor Celeste Nelson in the Department of Chemical 
+        and Biological Engineering.
+      - Developed experiments for the course to demonstrate the flow properties 
+        of the respiratory and circulatory systems.
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+    latex_overrides:
+grants:
+  - title: 'INCITE Proposal (PI: Sharon Glotzer)'
+    funder: US DOE
+    role: Contributor
+    amount: 800K hours, Summit
+    start: Jan 2019
+    end: Dec 2019
+    details:
+      - Prepared a proposal including resource requests from a research group of
+        ~40 researchers.
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - title: 'XSEDE Proposal (PI: Sharon Glotzer)'
+    funder: US NSF
+    role: Contributor
+    amount: 2.5MM hours, various machines
+    start: Jan 2018
+    end: Dec 2018
+    details:
+      - Prepared a proposal including resource requests from a research group of
+        ~40 researchers.
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - title: 'XSEDE Proposal (PI: Sharon Glotzer)'
+    funder: US NSF
+    role: Contributor
+    amount: 3.5MM hours, various machines
+    start: Jan 2017
+    end: Dec 2017
+    details:
+      - Prepared a proposal including resource requests from a research group of
+        ~40 researchers.
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - title: 'XSEDE Proposal (PI: Jens Glaser)'
+    funder: US NSF
+    role: Contributor
+    amount: 75K hours, XStream
+    start: Aug 2016
+    end: Jul 2017
+    details:
+      - Co-authored proposal for the development of solvent models.
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+extracurricular:
+  - organization: Life Sciences Orchestra
+    role: 2nd Trombone
+    start: Oct 2016
+    end: Present
+    location: University of Michigan
+    summary:
+    bullets: []
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+    latex_overrides:
+  - organization: Princeton University Orchestra Trombone
+    role: Bass Trombone
+    start: Sep 2009
+    end: Jun 2013
+    location: Princeton University
+    summary:
+    bullets: []
+    display:
+      compact: true
+      extended: true
+      outdated: true
+    notes:
+    latex_overrides:
+  - organization: Daily Princetonian
+    role: Senior Sports Writer
+    start: Sep 2009
+    end: Jun 2013
+    location: Princeton University
+    summary:
+    bullets: []
+    display:
+      compact: true
+      extended: true
+      outdated: true
+    notes:
+    latex_overrides:
+  - organization: American Foreign Policy
+    role: Contributor
+    start: Oct 2010
+    end: Jun 2013
+    location: Princeton University
+    summary:
+    bullets: []
+    display:
+      compact: true
+      extended: true
+      outdated: true
+    notes:
+    latex_overrides:
+  - organization: Lynbrook Varsity Tennis
+    role: Captain
+    start: Jan 2007
+    end: Jun 2009
+    location: Lynbrook High School
+    summary:
+    bullets: []
+    display:
+      compact: true
+      extended: true
+      outdated: true
+    notes: '(Captain: Jan 2007 - Jul 2007) % Date(s)'
+    latex_overrides:
+  - organization: California Youth Symphony
+    role: Lead Trombone
+    start: Jan 2008
+    end: Jul 2009
+    location: ''
+    summary:
+    bullets: []
+    display:
+      compact: true
+      extended: true
+      outdated: true
+    notes: '(Lead: Aug 2008 - Jul 2009) % Date(s)'
+    latex_overrides:
+affiliations:
+  - organization: Society of Industrial and Applied Mathematics (SIAM)
+    role:
+    date: 2018 - Present
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - organization: American Physical Society
+    role:
+    date: 2016 - Present
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - organization: American Chemical Society
+    role:
+    date: 2016 - Present
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+  - organization: American Institute of Chemical Engineers (AIChE)
+    role:
+    date: 2010 - Present
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    notes:
+wetlab_skills:
+  - category: Biology Techniques
+    items:
+      - Agarose Gel Electrophoresis
+      - Cell Culture
+      - Bacterial transformation
+      - Serial Analysis of Gene Expression (SAGE)
+      - in situ hybridization
+      - Microarray
+      - Dissection
+      - PCR
+      - RT-PCR
+      - DNA Ligation
+      - DNA Digestion
+      - Molecular Cloning
+      - Baleux Assay
+      - DNA isolation (Miniprep)
+      - Flow cytometry
+      - FACS
+      - Western Blotting
+      - Sequencing
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    latex_overrides:
+  - category: Chemistry Techniques
+    items:
+      - Flash Nanoprecipitation
+      - Confocal Microscopy
+      - Dynamic Light Scattering (DLS)
+      - Centrifugation
+      - Baleux Assay
+      - Microfluidics
+      - UV/VIS Spectroscopy
+      - Thermogravimetric Analysis
+      - Light Microscopy
+      - Spectrophotometry
+    display:
+      compact: true
+      extended: true
+      outdated: false
+    latex_overrides:
+summary:
+  text: '%--------------------------------------------------------- I am a PhD candidate
+    at the University of Michigan, Ann Arbor. I use molecular simulations and machine
+    learning methods to study the self-assembly of proteins and nanoparticles into
+    complex structures. I am most interested in using machine learning methods to
+    inform and advance physics-based modeling of complex systems. I am the lead developer
+    of a number of open-source projects in my research area and have contributed to
+    numerous other well-known tools like SciPy.'
+publications:
+  - cite_key: Butler2020
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: Ramasubramani2020b
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: Ramasubramani2020
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: Dice_2019
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: simon2019
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: vyas_ramasubramani-proc-scipy-2018
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: ADORF2018220
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: Sinha:2014aa
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: thesis
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: ramasubramani2018
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: adorf2018
+    display:
+      compact: true
+      extended: true
+      outdated: false
+presentations:
+  - cite_key: ramasubramaniaiche2019a
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: siamcse2019a
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: siamcse2019b
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: dice2019b
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: ramasubramaniaiche2019b
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: scipy2019
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: Adorf:2019aa
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: dice2019
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: adorf2019
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: glaseraiche2018
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: adorfaiche2018
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: scipy2018
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: midas2017
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: micde2018
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: micde2017
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: che2017
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: thesis2013
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: qcb2012
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: czr2012
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: molbio2012
+    display:
+      compact: true
+      extended: true
+      outdated: false
+  - cite_key: gibbs2012
+    display:
+      compact: true
+      extended: true
+      outdated: false
