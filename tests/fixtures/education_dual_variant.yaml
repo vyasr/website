@@ -1,0 +1,43 @@
+schema_version: "1.0"
+personal_info:
+  name: Vyas Ramasubramani
+  email: vyas.ramasubramani@gmail.com
+cv_config:
+  citations_mode: selectedpubs
+  selected_publications:
+    - Ramasubramani2020b
+education:
+  - institution: University of Michigan
+    degree: Ph.D. in Chemical Engineering and Scientific Computing and M.S. in Chemical Engineering
+    area: Chemical Engineering
+    start: "2015"
+    end: "2020"
+    location: Ann Arbor, MI
+    advisor: Sharon C. Glotzer
+    details:
+      - Ph.D. in Chemical Engineering and Scientific Computing
+      - M.S. in Chemical Engineering
+    compact_override:
+      institution: University of Michigan
+      degree: Ph.D. in Chemical Engineering
+      area: Chemical Engineering and Scientific Computing
+      start: "2015"
+      end: "2020"
+      location: Ann Arbor, MI
+      advisor: Sharon C. Glotzer
+      details: null
+research_experience: []
+work_experience: []
+skills: []
+projects: []
+honors: []
+service_leadership: []
+teaching_experience: []
+grants: []
+extracurricular: []
+affiliations: []
+wetlab_skills: []
+summary: null
+publications:
+  - cite_key: Ramasubramani2020b
+presentations: []

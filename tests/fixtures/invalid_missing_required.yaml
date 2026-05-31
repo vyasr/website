@@ -1,0 +1,21 @@
+schema_version: "1.0"
+personal_info:
+  email: vyas.ramasubramani@gmail.com
+cv_config:
+  citations_mode: selectedpubs
+  selected_publications: []
+education: []
+research_experience: []
+work_experience: []
+skills: []
+projects: []
+honors: []
+service_leadership: []
+teaching_experience: []
+grants: []
+extracurricular: []
+affiliations: []
+wetlab_skills: []
+summary: null
+publications: []
+presentations: []
