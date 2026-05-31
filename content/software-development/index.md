@@ -5,6 +5,12 @@ hideTitle: true
 
 I spend most of my time working in Python, C++, and CUDA, with a healthy dose of Rust. I've previously worked in a variety of other languages including Java, JavaScript, PHP, SQL, and Go. You can find some recent presentations I gave on the software I develop at NVIDIA linked below, especially [cudf](https://github.com/rapidsai/cudf/).
 
+Most recently, I gave a talk at PyCon 2026 on the basics of GPU computing for Python developers and data/AI scientists. You can view the slides below:
+
+<div class="cv-embed">
+  <iframe src="PyCon2026.pdf" title="PyCon 2026 Talk" loading="lazy" style="height: 600px;"></iframe>
+</div>
+
 <div class="video-grid">
   <div class="video-card">
     <div class="video-embed">
