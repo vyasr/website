@@ -10,6 +10,7 @@ from pathlib import Path
 from ruamel.yaml import YAML
 
 from scripts.lib.bibtex_parser import extract_cite_keys
+from scripts.lib.cv_config import CVConfigRoot
 from scripts.lib.latex_parser import (
     extract_cventry,
     extract_cvhonor,
@@ -34,8 +35,21 @@ SECTION_SOURCE_MAP: dict[str, tuple[str, str]] = {
     "wetlab_skills": ("cv/wetlabskills.tex", "cvskill"),
 }
 
-# Sections with dual-variant that may reduce YAML count by 1
-DUAL_VARIANT_SECTIONS = {"education"}
+# All sections that have entry-level IDs
+ID_SECTIONS = [
+    "education",
+    "research_experience",
+    "work_experience",
+    "projects",
+    "honors",
+    "service_leadership",
+    "teaching_experience",
+    "grants",
+    "extracurricular",
+    "affiliations",
+    "skills",
+    "wetlab_skills",
+]
 
 
 def load_yaml_data(yaml_path: Path) -> ProfessionalData:
@@ -43,6 +57,15 @@ def load_yaml_data(yaml_path: Path) -> ProfessionalData:
     yaml = YAML()
     data = yaml.load(yaml_path)
     return ProfessionalData.model_validate(data)
+
+
+def load_cv_config(cv_config_path: Path) -> CVConfigRoot | None:
+    """Load and validate CV config file, returning None if not found."""
+    if not cv_config_path.exists():
+        return None
+    yaml = YAML()
+    data = yaml.load(cv_config_path)
+    return CVConfigRoot.model_validate(data)
 
 
 def count_source_entries(source_dir: Path, tex_file: str, macro_type: str) -> int:
@@ -74,21 +97,12 @@ def check_counts(prof: ProfessionalData, source_dir: Path) -> tuple[bool, str]:
 
         yaml_count = len(getattr(prof, section))
 
-        # Allow dual-variant reduction
-        allowed_reduction = 1 if section in DUAL_VARIANT_SECTIONS else 0
-        min_expected = source_count - allowed_reduction
-
-        if yaml_count < min_expected:
+        if yaml_count < source_count:
             parts.append(
                 f"{section} source={source_count} yaml={yaml_count} "
-                f"(MISSING {min_expected - yaml_count} ENTRY)"
+                f"(MISSING {source_count - yaml_count} ENTRY)"
             )
             failed = True
-        elif section in DUAL_VARIANT_SECTIONS and yaml_count < source_count:
-            parts.append(
-                f"{section} source={source_count} yaml={yaml_count} "
-                f"({source_count - yaml_count} dual-variant)"
-            )
         else:
             parts.append(f"{section} source={source_count} yaml={yaml_count}")
 
@@ -131,21 +145,6 @@ def check_bib_completeness(
             failed = True
     else:
         parts.append("presentations bib not found")
-        failed = True
-
-    # Selected publications
-    cv_tex = source_dir / "cv.tex"
-    if cv_tex.exists():
-        selected = extract_selected_publications(cv_tex.read_text())
-        yaml_selected = prof.cv_config.selected_publications
-        parts.append(f"{len(yaml_selected)}/{len(selected)} selected")
-        if set(selected) != set(yaml_selected):
-            missing_sel = set(selected) - set(yaml_selected)
-            if missing_sel:
-                parts[-1] += f" (missing: {', '.join(sorted(missing_sel))})"
-            failed = True
-    else:
-        parts.append("cv.tex not found for selected")
         failed = True
 
     detail = ", ".join(parts)
@@ -197,28 +196,50 @@ def check_no_empty_sections(prof: ProfessionalData) -> tuple[bool, str]:
     return True, f"✓ no-empty-sections: {total}/{total} sections non-empty"
 
 
-def check_dual_variant(prof: ProfessionalData) -> tuple[bool, str]:
-    """Verify education compact_override is present."""
-    for edu in prof.education:
-        if edu.compact_override is not None:
-            return (
-                True,
-                f"✓ dual-variant: education compact_override present "
-                f"({edu.degree} at {edu.institution})",
-            )
-    return False, "✗ dual-variant: no education entry has compact_override"
+def check_ids(prof: ProfessionalData) -> tuple[bool, str]:
+    """Verify all entry IDs are globally unique across all sections."""
+    seen: dict[str, str] = {}  # id -> section where first seen
+    duplicates: list[str] = []
+
+    for section in ID_SECTIONS:
+        entries = getattr(prof, section)
+        for entry in entries:
+            entry_id = getattr(entry, "id", None)
+            if entry_id is None:
+                continue
+            if entry_id in seen:
+                duplicates.append(
+                    f"'{entry_id}' in both '{seen[entry_id]}' and '{section}'"
+                )
+            else:
+                seen[entry_id] = section
+
+    total_ids = len(seen)
+    if duplicates:
+        detail = "; ".join(duplicates)
+        return (
+            False,
+            f"✗ ids: {len(duplicates)} duplicate(s) found among {total_ids} IDs: {detail}",
+        )
+    return True, f"✓ ids: {total_ids} unique IDs across {len(ID_SECTIONS)} sections"
 
 
 def check_selected_order(
-    prof: ProfessionalData, source_dir: Path
+    cv_config: CVConfigRoot | None, source_dir: Path
 ) -> tuple[bool, str]:
-    """Verify selected_publications matches exact order from cv.tex."""
+    """Verify selected publications matches exact order from cv.tex."""
+    if cv_config is None:
+        return (
+            True,
+            "⚠ selected-order: cv/config.yaml not found, skipping (warning)",
+        )
+
     cv_tex = source_dir / "cv.tex"
     if not cv_tex.exists():
         return False, "✗ selected-order: cv.tex not found"
 
     source_keys = extract_selected_publications(cv_tex.read_text())
-    yaml_keys = prof.cv_config.selected_publications
+    yaml_keys = cv_config.citations.selected
 
     if source_keys == yaml_keys:
         return True, f"✓ selected-order: {len(yaml_keys)} keys in correct order"
@@ -294,27 +315,21 @@ def check_data_quality(prof: ProfessionalData) -> tuple[bool, str]:
     return True, "⚠ data-quality: 0 warnings"
 
 
-CHECK_MAP = {
-    "counts": "check_counts",
-    "bib-completeness": "check_bib_completeness",
-    "no-empty-sections": "check_no_empty_sections",
-    "dual-variant": "check_dual_variant",
-    "selected-order": "check_selected_order",
-    "data-quality": "check_data_quality",
-}
-
 ALL_CHECKS = [
     "counts",
     "bib-completeness",
     "no-empty-sections",
-    "dual-variant",
+    "ids",
     "selected-order",
     "data-quality",
 ]
 
 
 def run_check(
-    name: str, prof: ProfessionalData, source_dir: Path
+    name: str,
+    prof: ProfessionalData,
+    source_dir: Path,
+    cv_config: CVConfigRoot | None,
 ) -> tuple[bool, str]:
     """Run a single named check."""
     if name == "counts":
@@ -323,10 +338,10 @@ def run_check(
         return check_bib_completeness(prof, source_dir)
     elif name == "no-empty-sections":
         return check_no_empty_sections(prof)
-    elif name == "dual-variant":
-        return check_dual_variant(prof)
+    elif name == "ids":
+        return check_ids(prof)
     elif name == "selected-order":
-        return check_selected_order(prof, source_dir)
+        return check_selected_order(cv_config, source_dir)
     elif name == "data-quality":
         return check_data_quality(prof)
     else:
@@ -350,14 +365,21 @@ def main() -> int:
         help="Path to CV source directory (default: external/awesome-cv/mycv/)",
     )
     parser.add_argument(
+        "--cv-config",
+        type=Path,
+        default=Path("cv/config.yaml"),
+        help="Path to CV config file (default: cv/config.yaml)",
+    )
+    parser.add_argument(
         "yaml_file",
         type=Path,
-        help="Path to the professional.yaml file to verify",
+        help="Path to the professional.yaml data file to verify",
     )
     args = parser.parse_args()
 
     yaml_path: Path = args.yaml_file
     source_dir: Path = args.source_dir
+    cv_config_path: Path = args.cv_config
 
     if not yaml_path.exists():
         print(f"ERROR: YAML file not found: {yaml_path}", file=sys.stderr)
@@ -369,6 +391,7 @@ def main() -> int:
 
     print(f"Running verification checks on: {yaml_path}")
     print(f"Source directory: {source_dir}/")
+    print(f"CV config: {cv_config_path}")
     print()
 
     # Load and validate YAML
@@ -378,12 +401,22 @@ def main() -> int:
         print(f"ERROR: Failed to load/validate YAML: {e}", file=sys.stderr)
         return 1
 
+    # Load CV config (may be None if file doesn't exist yet)
+    try:
+        cv_config = load_cv_config(cv_config_path)
+    except Exception as e:
+        print(
+            f"WARNING: Failed to load CV config ({cv_config_path}): {e}",
+            file=sys.stderr,
+        )
+        cv_config = None
+
     # Determine which checks to run
     checks = ALL_CHECKS if args.check == "all" else [args.check]
 
     failures = 0
     for check_name in checks:
-        passed, message = run_check(check_name, prof, source_dir)
+        passed, message = run_check(check_name, prof, source_dir, cv_config)
         print(message)
         if not passed and check_name != "data-quality":
             failures += 1

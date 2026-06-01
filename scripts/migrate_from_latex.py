@@ -3,11 +3,15 @@ from __future__ import annotations
 import argparse
 import re
 import sys
+from collections.abc import Sequence
 from pathlib import Path
+from typing import Literal, Protocol, cast
 
-from ruamel.yaml import YAML  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
+from pydantic import BaseModel
+from ruamel.yaml import YAML
 
 from scripts.lib.bibtex_parser import extract_cite_keys
+from scripts.lib.cv_config import CVConfigRoot, CitationsConfig, EntryConfig, SectionConfig, SectionsConfig
 from scripts.lib.latex_parser import (
     determine_display_context,
     expand_local_macros,
@@ -23,8 +27,6 @@ from scripts.lib.latex_parser import (
 )
 from scripts.lib.schema import (
     Affiliation,
-    CVConfig,
-    DisplayConfig,
     Education,
     Experience,
     Grant,
@@ -44,6 +46,14 @@ ROOT = Path(__file__).resolve().parents[1]
 MYCV = ROOT / "external" / "awesome-cv" / "mycv"
 CV_DIR = MYCV / "cv"
 
+DisplayMode = Literal["compact", "extended"]
+DisplayInfo = dict[str, bool]
+Formatted = dict[str, dict[str, str]]
+
+
+class EntryWithID(Protocol):
+    id: str
+
 
 def warn(message: str) -> None:
     print(f"WARNING: {message}", file=sys.stderr)
@@ -57,8 +67,9 @@ def read_source(path: Path) -> str:
         return ""
 
 
-def display_from_entry(entry: dict[str, str], content: str) -> DisplayConfig:
-    return DisplayConfig(**determine_display_context(entry.get("_raw", "").splitlines(), content.splitlines()))
+def display_from_entry(entry: dict[str, str], content: str) -> DisplayInfo:
+    display = determine_display_context(entry.get("_raw", "").splitlines(), content.splitlines())
+    return {"compact": display["compact"], "extended": display["extended"], "outdated": display["outdated"]}
 
 
 def clean(raw: str) -> tuple[str, str | None]:
@@ -66,10 +77,10 @@ def clean(raw: str) -> tuple[str, str | None]:
     return text, override
 
 
-def clean_field(raw: str, field_name: str, overrides: dict[str, str]) -> str:
+def clean_field(raw: str, field_name: str, formatted: Formatted) -> str:
     text, override = clean(raw)
     if override is not None:
-        overrides[field_name] = override
+        formatted[field_name] = {"latex": override}
     return text
 
 
@@ -100,7 +111,10 @@ def extract_entry_notes(raw: str) -> str | None:
     notes: list[str] = []
     for line in raw.splitlines():
         note = extract_comment_metadata(line)
-        if note and not re.fullmatch(r"(?:Degree|Institution|Location|Date\(s\)|Job title|Organization|Role|Event|Award|Type|Skillset|Description\(s\).*|Affiliation/role|Organization/group|Position|Affiliation)", note):
+        if note and not re.fullmatch(
+            r"(?:Degree|Institution|Location|Date\(s\)|Job title|Organization|Role|Event|Award|Type|Skillset|Description\(s\).*|Affiliation/role|Organization/group|Position|Affiliation)",
+            note,
+        ):
             notes.append(note)
     return "; ".join(notes) if notes else None
 
@@ -111,96 +125,160 @@ def area_from_degree(degree: str) -> str:
     return ""
 
 
-def make_education(entry: dict[str, str], content: str, *, degree: str | None = None, date: str | None = None, display: DisplayConfig | None = None) -> Education:
+def slugify(value: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", value.lower())
+    return re.sub(r"-+", "-", slug).strip("-")
+
+
+def degree_slug(degree: str) -> str:
+    degree_lower = degree.lower()
+    if "ph.d" in degree_lower or "phd" in degree_lower:
+        return "phd"
+    if "m.s" in degree_lower or "ms" in degree_lower:
+        return "ms"
+    if "b.s" in degree_lower or "bse" in degree_lower or "b.s.e" in degree_lower:
+        return "bse"
+    return slugify(degree) or "degree"
+
+
+def org_slug(organization: str) -> str:
+    replacements = {
+        "University of Michigan": "umich",
+        "Princeton University": "princeton",
+        "Academy of Sciences of the Czech Republic": "ascr",
+        "Stanford University": "stanford",
+        "UC Santa Cruz": "ucsc",
+    }
+    for prefix, replacement in replacements.items():
+        if organization.startswith(prefix):
+            suffix = organization.removeprefix(prefix).strip(" -")
+            return "-".join(part for part in [replacement, slugify(suffix)] if part)
+    return slugify(organization) or "entry"
+
+
+def role_slug(role: str) -> str:
+    value = role.lower().replace("software engineer", "swe")
+    return slugify(value) or "role"
+
+
+def unique_id(base: str, used_ids: set[str]) -> str:
+    candidate = base or "entry"
+    suffix = 2
+    while candidate in used_ids:
+        candidate = f"{base}-{suffix}"
+        suffix += 1
+    used_ids.add(candidate)
+    return candidate
+
+
+def make_formatted(formatted: Formatted) -> Formatted | None:
+    return formatted or None
+
+
+def display_modes(display: DisplayInfo) -> list[DisplayMode]:
+    modes: list[DisplayMode] = []
+    if display["compact"]:
+        modes.append("compact")
+    if display["extended"]:
+        modes.append("extended")
+    return modes or ["compact", "extended"]
+
+
+def make_education(
+    entry: dict[str, str],
+    *,
+    used_ids: set[str],
+    degree: str | None = None,
+    date: str | None = None,
+) -> tuple[Education, DisplayInfo]:
     degree_text = degree if degree is not None else clean(entry["arg1"])[0]
     institution = clean(entry["arg2"])[0]
     location = clean(entry["arg3"])[0]
     start, end = split_dates(date if date is not None else entry["arg4"])
     details = clean(entry["arg5"])[0]
-    return Education(
-        institution=institution,
-        degree=degree_text,
-        area=area_from_degree(degree_text),
-        start=start,
-        end=end,
-        location=location,
-        advisor=None,
-        details=none_if_empty(details),
-        display=display or display_from_entry(entry, content),
-        compact_override=None,
-        notes=extract_entry_notes(entry.get("_raw", "")),
+    entry_id = unique_id(f"{org_slug(institution)}-{degree_slug(degree_text)}", used_ids)
+    return (
+        Education(
+            id=entry_id,
+            institution=institution,
+            degree=degree_text,
+            area=area_from_degree(degree_text),
+            start=start,
+            end=end,
+            location=location,
+            advisor=None,
+            details=none_if_empty(details),
+            notes=extract_entry_notes(entry.get("_raw", "")),
+        ),
+        display_from_entry(entry, read_source(CV_DIR / "education.tex")),
     )
 
 
-def migrate_education() -> list[Education]:
+def migrate_education(used_ids: set[str]) -> tuple[list[Education], list[DisplayInfo]]:
     content = read_source(CV_DIR / "education.tex")
     entries = extract_cventry(content)
     if len(entries) < 2:
-        warn("education.tex did not contain expected compact/full entries")
-        return [make_education(entry, content) for entry in entries]
+        pairs = [make_education(entry, used_ids=used_ids) for entry in entries]
+        return [entry for entry, _ in pairs], [display for _, display in pairs]
 
-    compact_entry = entries[0]
     full_entry = entries[1]
-    compact_display = display_from_entry(compact_entry, content)
-    full_display = display_from_entry(full_entry, content)
     degree_parts = [part.strip() for part in full_entry["arg1"].split("\\linebreak") if part.strip()]
     date_parts = [part.strip() for part in full_entry["arg4"].split("\\linebreak") if part.strip()]
 
     migrated: list[Education] = []
-    phd = make_education(
-        full_entry,
-        content,
-        degree=clean(degree_parts[0] if degree_parts else full_entry["arg1"])[0],
-        date=date_parts[0] if date_parts else full_entry["arg4"],
-        display=full_display,
-    )
-    phd.compact_override = make_education(compact_entry, content, display=compact_display)
-    migrated.append(phd)
-    if len(degree_parts) > 1:
-        migrated.append(
-            make_education(
-                full_entry,
-                content,
-                degree=clean(degree_parts[1])[0],
-                date=date_parts[1] if len(date_parts) > 1 else full_entry["arg4"],
-                display=full_display,
-            )
+    displays: list[DisplayInfo] = []
+    for index, degree in enumerate(degree_parts or [full_entry["arg1"]]):
+        education, display = make_education(
+            full_entry,
+            used_ids=used_ids,
+            degree=clean(degree)[0],
+            date=date_parts[index] if index < len(date_parts) else full_entry["arg4"],
         )
+        if education.id == "umich-ms":
+            display = {"compact": False, "extended": True, "outdated": False}
+        migrated.append(education)
+        displays.append(display)
     for entry in entries[2:]:
-        migrated.append(make_education(entry, content))
-    return migrated
+        education, display = make_education(entry, used_ids=used_ids)
+        migrated.append(education)
+        displays.append(display)
+    return migrated, displays
 
 
-def make_experience(entry: dict[str, str], content: str) -> Experience:
-    overrides: dict[str, str] = {}
-    role = clean_field(entry["arg1"], "role", overrides)
-    organization = clean_field(entry["arg2"], "organization", overrides)
-    location = clean_field(entry["arg3"], "location", overrides)
+def make_experience(entry: dict[str, str], content: str, *, used_ids: set[str]) -> tuple[Experience, DisplayInfo]:
+    formatted: Formatted = {}
+    role = clean_field(entry["arg1"], "role", formatted)
+    organization = clean_field(entry["arg2"], "organization", formatted)
+    location = clean_field(entry["arg3"], "location", formatted)
     start, end = split_dates(entry["arg4"])
     body_text, body_override = clean(entry["arg5"])
     if body_override is not None:
-        overrides["summary"] = body_override
+        formatted["summary"] = {"latex": body_override}
     bullets = extract_bullets(entry["arg5"])
     summary = none_if_empty(body_text) if not bullets else None
-    return Experience(
-        organization=organization,
-        role=role,
-        start=start,
-        end=end,
-        location=location,
-        summary=summary,
-        bullets=bullets,
-        display=display_from_entry(entry, content),
-        notes=extract_entry_notes(entry.get("_raw", "")),
-        latex_overrides=overrides or None,
+    return (
+        Experience(
+            id=unique_id(f"{org_slug(organization)}-{role_slug(role)}", used_ids),
+            organization=organization,
+            role=role,
+            start=start,
+            end=end,
+            location=location,
+            summary=summary,
+            bullets=bullets,
+            formatted=make_formatted(formatted),
+            notes=extract_entry_notes(entry.get("_raw", "")),
+        ),
+        display_from_entry(entry, content),
     )
 
 
-def migrate_experience(filename: str, *, expand_macros: bool = False) -> list[Experience]:
+def migrate_experience(filename: str, used_ids: set[str], *, expand_macros: bool = False) -> tuple[list[Experience], list[DisplayInfo]]:
     content = read_source(CV_DIR / filename)
     if expand_macros:
         content = expand_local_macros(content, extract_local_macro_defs(content))
-    return [make_experience(entry, content) for entry in extract_cventry(content)]
+    pairs = [make_experience(entry, content, used_ids=used_ids) for entry in extract_cventry(content)]
+    return [entry for entry, _ in pairs], [display for _, display in pairs]
 
 
 def split_skill_items(text: str) -> list[str]:
@@ -208,110 +286,134 @@ def split_skill_items(text: str) -> list[str]:
     return items or ([text] if text else [])
 
 
-def migrate_skills(filename: str) -> list[Skill]:
+def migrate_skills(filename: str, used_ids: set[str]) -> tuple[list[Skill], list[DisplayInfo]]:
     content = read_source(CV_DIR / filename)
     skills: list[Skill] = []
+    displays: list[DisplayInfo] = []
     for entry in extract_cvskill(content):
-        overrides: dict[str, str] = {}
-        category = clean_field(entry["arg1"], "category", overrides)
-        description = clean_field(entry["arg2"], "items", overrides)
+        formatted: Formatted = {}
+        category = clean_field(entry["arg1"], "category", formatted)
+        description = clean_field(entry["arg2"], "items", formatted)
         skills.append(
             Skill(
+                id=unique_id(slugify(category), used_ids),
                 category=category,
                 items=split_skill_items(description),
-                display=display_from_entry(entry, content),
-                latex_overrides=overrides or None,
+                formatted=make_formatted(formatted),
             )
         )
-    return skills
+        displays.append(display_from_entry(entry, content))
+    return skills, displays
 
 
-def migrate_projects() -> list[Project]:
+def migrate_projects(used_ids: set[str]) -> tuple[list[Project], list[DisplayInfo]]:
     content = read_source(CV_DIR / "projects.tex")
     projects: list[Project] = []
+    displays: list[DisplayInfo] = []
     for entry in extract_cventry(content):
-        overrides: dict[str, str] = {}
-        role = clean_field(entry["arg1"], "summary", overrides)
-        name = clean_field(entry["arg2"], "name", overrides)
+        formatted: Formatted = {}
+        role = clean_field(entry["arg1"], "summary", formatted)
+        name = clean_field(entry["arg2"], "name", formatted)
         projects.append(
             Project(
+                id=unique_id(slugify(name), used_ids),
                 name=name,
                 url=None,
                 summary=none_if_empty(role),
                 bullets=extract_bullets(entry["arg5"]),
                 technologies=[],
-                display=display_from_entry(entry, content),
+                formatted=make_formatted(formatted),
                 notes=extract_entry_notes(entry.get("_raw", "")),
-                latex_overrides=overrides or None,
             )
         )
-    return projects
+        displays.append(display_from_entry(entry, content))
+    return projects, displays
 
 
-def migrate_honors(filename: str) -> list[Honor]:
+def migrate_honors(filename: str, used_ids: set[str]) -> tuple[list[Honor], list[DisplayInfo]]:
     content = read_source(CV_DIR / filename)
-    return [
-        Honor(
-            title=clean(entry["arg1"])[0],
-            issuer=none_if_empty(clean(entry["arg2"])[0]),
-            location=none_if_empty(clean(entry["arg3"])[0]),
-            date=none_if_empty(clean(entry["arg4"])[0]),
-            summary=None,
-            display=display_from_entry(entry, content),
-            notes=extract_entry_notes(entry.get("_raw", "")),
+    honors: list[Honor] = []
+    displays: list[DisplayInfo] = []
+    for entry in extract_cvhonor(content):
+        title = clean(entry["arg1"])[0]
+        issuer = none_if_empty(clean(entry["arg2"])[0])
+        honors.append(
+            Honor(
+                id=unique_id(slugify("-".join(part for part in [title, issuer or ""] if part)), used_ids),
+                title=title,
+                issuer=issuer,
+                location=none_if_empty(clean(entry["arg3"])[0]),
+                date=none_if_empty(clean(entry["arg4"])[0]),
+                summary=None,
+                notes=extract_entry_notes(entry.get("_raw", "")),
+            )
         )
-        for entry in extract_cvhonor(content)
-    ]
+        displays.append(display_from_entry(entry, content))
+    return honors, displays
 
 
-def migrate_service() -> list[Service]:
+def migrate_service(used_ids: set[str]) -> tuple[list[Service], list[DisplayInfo]]:
     content = read_source(CV_DIR / "serviceleadership.tex")
-    return [
-        Service(
-            role=clean(entry["arg1"])[0],
-            organization=clean(entry["arg2"])[0],
-            location=none_if_empty(clean(entry["arg3"])[0]),
-            date=none_if_empty(clean(entry["arg4"])[0]),
-            display=display_from_entry(entry, content),
-            notes=extract_entry_notes(entry.get("_raw", "")),
+    services: list[Service] = []
+    displays: list[DisplayInfo] = []
+    for entry in extract_cvhonor(content):
+        role = clean(entry["arg1"])[0]
+        organization = clean(entry["arg2"])[0]
+        services.append(
+            Service(
+                id=unique_id(slugify(f"{organization}-{role}"), used_ids),
+                role=role,
+                organization=organization,
+                location=none_if_empty(clean(entry["arg3"])[0]),
+                date=none_if_empty(clean(entry["arg4"])[0]),
+                notes=extract_entry_notes(entry.get("_raw", "")),
+            )
         )
-        for entry in extract_cvhonor(content)
-    ]
+        displays.append(display_from_entry(entry, content))
+    return services, displays
 
 
-def migrate_grants() -> list[Grant]:
+def migrate_grants(used_ids: set[str]) -> tuple[list[Grant], list[DisplayInfo]]:
     content = read_source(CV_DIR / "grants.tex")
     grants: list[Grant] = []
+    displays: list[DisplayInfo] = []
     for entry in extract_cventry(content):
         start, end = split_dates(entry["arg4"])
+        title = clean(entry["arg2"])[0]
         grants.append(
             Grant(
-                title=clean(entry["arg2"])[0],
+                id=unique_id(slugify("-".join([title, start])), used_ids),
+                title=title,
                 funder=clean(entry["arg3"])[0],
                 role="Contributor",
                 amount=none_if_empty(clean(entry["arg1"])[0]),
                 start=none_if_empty(start),
                 end=none_if_empty(end),
                 details=extract_bullets(entry["arg5"]),
-                display=display_from_entry(entry, content),
                 notes=extract_entry_notes(entry.get("_raw", "")),
             )
         )
-    return grants
+        displays.append(display_from_entry(entry, content))
+    return grants, displays
 
 
-def migrate_affiliations() -> list[Affiliation]:
+def migrate_affiliations(used_ids: set[str]) -> tuple[list[Affiliation], list[DisplayInfo]]:
     content = read_source(CV_DIR / "affiliations.tex")
-    return [
-        Affiliation(
-            organization=clean(entry["arg2"])[0],
-            role=none_if_empty(clean(entry["arg1"])[0]),
-            date=none_if_empty(clean(entry["arg4"])[0]),
-            display=display_from_entry(entry, content),
-            notes=extract_entry_notes(entry.get("_raw", "")),
+    affiliations: list[Affiliation] = []
+    displays: list[DisplayInfo] = []
+    for entry in extract_cvhonor(content):
+        organization = clean(entry["arg2"])[0]
+        affiliations.append(
+            Affiliation(
+                id=unique_id(slugify(organization), used_ids),
+                organization=organization,
+                role=none_if_empty(clean(entry["arg1"])[0]),
+                date=none_if_empty(clean(entry["arg4"])[0]),
+                notes=extract_entry_notes(entry.get("_raw", "")),
+            )
         )
-        for entry in extract_cvhonor(content)
-    ]
+        displays.append(display_from_entry(entry, content))
+    return affiliations, displays
 
 
 def migrate_summary() -> Summary | None:
@@ -320,6 +422,7 @@ def migrate_summary() -> Summary | None:
     if paragraph is None:
         return None
     text, _ = clean(paragraph)
+    text = re.sub(r"^(?:%-+\s*)+", "", text).strip()
     return Summary(text=text)
 
 
@@ -336,51 +439,93 @@ def make_personal_info(cv_tex: str) -> PersonalInfo:
     )
 
 
-def build_data() -> ProfessionalData:
-    cv_tex = read_source(MYCV / "cv.tex")
-    publication_keys = extract_cite_keys(MYCV / "Publications.bib")
-    presentation_keys = extract_cite_keys(MYCV / "Presentations.bib")
-    return ProfessionalData(
-        schema_version="1.0",
-        personal_info=make_personal_info(cv_tex),
-        cv_config=CVConfig(citations_mode="selectedpubs", selected_publications=extract_selected_publications(cv_tex)),
-        education=migrate_education(),
-        research_experience=migrate_experience("researchexperience.tex", expand_macros=True),
-        work_experience=migrate_experience("workexperience.tex"),
-        skills=migrate_skills("skills.tex"),
-        projects=migrate_projects(),
-        honors=migrate_honors("honors.tex"),
-        service_leadership=migrate_service(),
-        teaching_experience=migrate_experience("teachingexperience.tex"),
-        grants=migrate_grants(),
-        extracurricular=migrate_experience("extracurricular.tex"),
-        affiliations=migrate_affiliations(),
-        wetlab_skills=migrate_skills("wetlabskills.tex"),
-        summary=migrate_summary(),
-        publications=[PublicationRef(cite_key=key) for key in publication_keys],
-        presentations=[PresentationRef(cite_key=key) for key in presentation_keys],
+def section_config(entries: Sequence[EntryWithID], displays: Sequence[DisplayInfo]) -> SectionConfig:
+    return SectionConfig(
+        entries=[
+            EntryConfig(id=str(entry.id), display=display_modes(display), outdated=display["outdated"])
+            for entry, display in zip(entries, displays, strict=True)
+        ]
     )
 
 
-def write_yaml(data: ProfessionalData, output_path: Path) -> None:
+def build_data_and_config() -> tuple[ProfessionalData, CVConfigRoot]:
+    cv_tex = read_source(MYCV / "cv.tex")
+    used_ids: set[str] = set()
+    education, education_display = migrate_education(used_ids)
+    research, research_display = migrate_experience("researchexperience.tex", used_ids, expand_macros=True)
+    work, work_display = migrate_experience("workexperience.tex", used_ids)
+    skills, skills_display = migrate_skills("skills.tex", used_ids)
+    projects, projects_display = migrate_projects(used_ids)
+    honors, honors_display = migrate_honors("honors.tex", used_ids)
+    service, service_display = migrate_service(used_ids)
+    teaching, teaching_display = migrate_experience("teachingexperience.tex", used_ids)
+    grants, grants_display = migrate_grants(used_ids)
+    extracurricular, extracurricular_display = migrate_experience("extracurricular.tex", used_ids)
+    affiliations, affiliations_display = migrate_affiliations(used_ids)
+    wetlab_skills, wetlab_skills_display = migrate_skills("wetlabskills.tex", used_ids)
+
+    data = ProfessionalData(
+        schema_version="1.0",
+        personal_info=make_personal_info(cv_tex),
+        education=education,
+        research_experience=research,
+        work_experience=work,
+        skills=skills,
+        projects=projects,
+        honors=honors,
+        service_leadership=service,
+        teaching_experience=teaching,
+        grants=grants,
+        extracurricular=extracurricular,
+        affiliations=affiliations,
+        wetlab_skills=wetlab_skills,
+        summary=migrate_summary(),
+        publications=[PublicationRef(cite_key=key) for key in extract_cite_keys(MYCV / "Publications.bib")],
+        presentations=[PresentationRef(cite_key=key) for key in extract_cite_keys(MYCV / "Presentations.bib")],
+    )
+    config = CVConfigRoot(
+        schema_version="1.0",
+        citations=CitationsConfig(mode="selectedpubs", selected=extract_selected_publications(cv_tex)),
+        sections=SectionsConfig(
+            education=section_config(education, education_display),
+            research_experience=section_config(research, research_display),
+            work_experience=section_config(work, work_display),
+            skills=section_config(skills, skills_display),
+            projects=section_config(projects, projects_display),
+            honors=section_config(honors, honors_display),
+            service_leadership=section_config(service, service_display),
+            teaching_experience=section_config(teaching, teaching_display),
+            grants=section_config(grants, grants_display),
+            extracurricular=section_config(extracurricular, extracurricular_display),
+            affiliations=section_config(affiliations, affiliations_display),
+            wetlab_skills=section_config(wetlab_skills, wetlab_skills_display),
+        ),
+    )
+    return ProfessionalData.model_validate(data.model_dump()), CVConfigRoot.model_validate(config.model_dump())
+
+
+def write_yaml(data: BaseModel, output_path: Path) -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    yaml = YAML()  # pyright: ignore[reportUnknownVariableType]
+    yaml = YAML()
     yaml.default_flow_style = False
-    yaml.indent(mapping=2, sequence=4, offset=2)  # pyright: ignore[reportUnknownMemberType]
-    data_dict: dict[str, object] = data.model_dump(by_alias=False)
+    yaml.indent(mapping=2, sequence=4, offset=2)  # pyright: ignore[reportAny]
     with output_path.open("w") as handle:
-        yaml.dump(data_dict, handle)  # pyright: ignore[reportUnknownMemberType]
+        yaml.dump(data.model_dump(by_alias=False), handle)  # pyright: ignore[reportUnknownMemberType]
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Migrate AwesomeCV LaTeX data to validated YAML.")
-    _ = parser.add_argument("--output", default=str(ROOT / "data" / "professional.yaml"), help="Output YAML path")
+    _ = parser.add_argument("--data-output", default=str(ROOT / "data" / "professional.yaml"), help="Professional data YAML path")
+    _ = parser.add_argument("--cv-config-output", default=str(ROOT / "cv" / "config.yaml"), help="CV config YAML path")
     args: argparse.Namespace = parser.parse_args()
 
-    data = build_data()
-    output_path = Path(str(args.output))  # pyright: ignore[reportAny]
-    write_yaml(data, output_path)
-    print(f"Wrote {output_path}")
+    data, config = build_data_and_config()
+    data_output = Path(str(cast(str, args.data_output)))
+    config_output = Path(str(cast(str, args.cv_config_output)))
+    write_yaml(data, data_output)
+    write_yaml(config, config_output)
+    print(f"Wrote {data_output}")
+    print(f"Wrote {config_output}")
     counts = (
         f"Counts: education={len(data.education)}, research={len(data.research_experience)}, "
         f"work={len(data.work_experience)}, projects={len(data.projects)}, honors={len(data.honors)}, "
