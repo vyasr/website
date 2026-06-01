@@ -7,37 +7,27 @@ personal_info:
   github: vyasr
   linkedin: vyas-ramasubramani
   location: Santa Clara, CA
-cv_config:
-  citations_mode: selectedpubs
-  selected_publications:
-    - Ramasubramani2020b
-    - Ramasubramani2020
-    - Dice_2019
 education:
-  - institution: University of Michigan
-    degree: Ph.D. in Chemical Engineering and Scientific Computing and M.S. in Chemical Engineering
-    area: Chemical Engineering
+  - id: umich-phd
+    institution: University of Michigan
+    degree: Ph.D. in Chemical Engineering and Scientific Computing
+    area: Chemical Engineering and Scientific Computing
     start: "2015"
     end: "2020"
     location: Ann Arbor, MI
     advisor: Sharon C. Glotzer
-    details:
-      - Ph.D. in Chemical Engineering and Scientific Computing
-      - M.S. in Chemical Engineering
-    display:
-      compact: true
-      extended: true
-      outdated: false
-    compact_override:
-      institution: University of Michigan
-      degree: Ph.D. in Chemical Engineering and Scientific Computing
-      area: Chemical Engineering
-      start: "2015"
-      end: "2020"
-      location: Ann Arbor, MI
-      advisor: Sharon C. Glotzer
-      details: null
-  - institution: Princeton University
+    details: null
+  - id: umich-ms
+    institution: University of Michigan
+    degree: M.S. in Chemical Engineering
+    area: Chemical Engineering
+    start: "2015"
+    end: "2017"
+    location: Ann Arbor, MI
+    advisor: Sharon C. Glotzer
+    details: null
+  - id: princeton-bse
+    institution: Princeton University
     degree: B.S.E. in Chemical Engineering
     area: Chemical Engineering
     start: "2009"
@@ -45,7 +35,8 @@ education:
     location: Princeton, NJ
     details: "Minors: Quantitative and Computational Biology, Applications of Computing"
 research_experience:
-  - organization: University of Michigan
+  - id: umich-glotzer-ra
+    organization: University of Michigan
     role: Graduate Research Assistant
     start: "2015"
     end: "2020"
@@ -54,7 +45,8 @@ research_experience:
     bullets:
       - Developed analysis methods for molecular simulations.
 work_experience:
-  - organization: NVIDIA
+  - id: nvidia-senior-swe
+    organization: NVIDIA
     role: Senior Software Engineer
     start: Mar 2020
     end: Present
@@ -62,49 +54,45 @@ work_experience:
     bullets:
       - Implemented critical GPU algorithms.
 skills:
-  - category: Languages
+  - id: languages
+    category: Languages
     items:
       - Python
       - C++
       - CUDA
-    latex_overrides:
-      items: "\\textsc{expert}: Python, C++, CUDA"
+    formatted:
+      items:
+        latex: "\\textsc{expert}: Python, C++, CUDA"
 projects:
-  - name: signac framework
+  - id: signac-framework
+    name: signac framework
     url: https://github.com/glotzerlab/signac
     summary: Data and workflow management in Python.
     bullets:
       - Co-led development of a NumFOCUS-affiliated project.
     technologies:
       - Python
-    display:
-      compact: true
-      extended: true
-      outdated: false
-    latex_overrides:
-      name: "signac framework ({\\tiny github.com/glotzerlab/signac})"
+    formatted:
+      name:
+        latex: "signac framework ({\\tiny github.com/glotzerlab/signac})"
 honors:
-  - title: Rackham Conference Travel Grant
+  - id: rackham-conference-travel-grant
+    title: Rackham Conference Travel Grant
     issuer: University of Michigan
     location: Ann Arbor, MI
     date: June 2018
-    display:
-      compact: true
-      extended: false
-      outdated: false
-  - title: National Merit Scholar
+  - id: national-merit-scholar
+    title: National Merit Scholar
     issuer: National Merit Scholarship Corporation
     date: May 2009
-    display:
-      compact: true
-      extended: true
-      outdated: true
 service_leadership:
-  - role: Reviewer
+  - id: journal-of-chemical-physics-reviewer
+    role: Reviewer
     organization: Journal of Chemical Physics
     date: "2019"
 teaching_experience:
-  - organization: University of Michigan
+  - id: umich-gsi
+    organization: University of Michigan
     role: Graduate Student Instructor
     start: Jan 2018
     end: Apr 2018
@@ -112,7 +100,8 @@ teaching_experience:
     bullets:
       - Led recitation sections.
 grants:
-  - title: Research Grant
+  - id: research-grant
+    title: Research Grant
     funder: National Science Foundation
     role: Co-PI
     amount: null
@@ -121,18 +110,21 @@ grants:
     details:
       - Supported computational research.
 extracurricular:
-  - organization: Life Sciences Orchestra
+  - id: life-sciences-orchestra
+    organization: Life Sciences Orchestra
     role: 2nd Trombone
     start: Oct 2016
     end: Present
     location: University of Michigan
     notes: "Date field originally contained LaTeX small caps for Present."
 affiliations:
-  - organization: American Institute of Chemical Engineers
+  - id: aiche
+    organization: American Institute of Chemical Engineers
     role: Member
     date: "2017"
 wetlab_skills:
-  - category: Wet lab
+  - id: wetlab
+    category: Wet lab
     items:
       - Bacterial culture
       - PCR
@@ -140,15 +132,7 @@ summary:
   text: Computational scientist and software engineer focused on high-performance scientific Python.
 publications:
   - cite_key: Ramasubramani2020b
-    display:
-      compact: true
-      extended: true
-      outdated: false
   - cite_key: Ramasubramani2020
   - cite_key: Dice_2019
 presentations:
   - cite_key: scipy2018
-    display:
-      compact: true
-      extended: true
-      outdated: false

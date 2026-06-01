@@ -7,12 +7,9 @@ personal_info:
   github: vyasr
   linkedin: vyas-ramasubramani
   location: Santa Clara, CA
-cv_config:
-  citations_mode: selectedpubs
-  selected_publications:
-    - Ramasubramani2020b
 education:
-  - institution: University of Michigan
+  - id: umich-phd
+    institution: University of Michigan
     degree: Ph.D. in Chemical Engineering and Scientific Computing
     area: Chemical Engineering and Scientific Computing
     start: "2015"

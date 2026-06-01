@@ -1,10 +1,14 @@
 schema_version: "1.0"
 personal_info:
+  name: Vyas Ramasubramani
   email: vyas.ramasubramani@gmail.com
-cv_config:
-  citations_mode: selectedpubs
-  selected_publications: []
-education: []
+education:
+  - institution: University of Michigan
+    degree: Ph.D. in Chemical Engineering and Scientific Computing
+    area: Chemical Engineering and Scientific Computing
+    start: "2015"
+    end: "2020"
+    location: Ann Arbor, MI
 research_experience: []
 work_experience: []
 skills: []

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import ClassVar, Literal
+from typing import ClassVar
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -19,18 +19,8 @@ class PersonalInfo(SchemaBaseModel):
     location: str | None = None
 
 
-class DisplayConfig(SchemaBaseModel):
-    compact: bool = True
-    extended: bool = True
-    outdated: bool = False
-
-
-class CVConfig(SchemaBaseModel):
-    citations_mode: Literal["selectedpubs", "all", "none", "combinepubs"]
-    selected_publications: list[str] = Field(default_factory=list)
-
-
 class Education(SchemaBaseModel):
+    id: str
     institution: str
     degree: str
     area: str
@@ -39,12 +29,12 @@ class Education(SchemaBaseModel):
     location: str
     advisor: str | None = None
     details: str | list[str] | None = None
-    display: DisplayConfig = Field(default_factory=DisplayConfig)
-    compact_override: Education | None = None
+    formatted: dict[str, dict[str, str]] | None = None
     notes: str | None = None
 
 
 class Experience(SchemaBaseModel):
+    id: str
     organization: str
     role: str
     start: str
@@ -52,49 +42,50 @@ class Experience(SchemaBaseModel):
     location: str
     summary: str | None = None
     bullets: list[str] = Field(default_factory=list)
-    display: DisplayConfig = Field(default_factory=DisplayConfig)
+    formatted: dict[str, dict[str, str]] | None = None
     notes: str | None = None
-    latex_overrides: dict[str, str] | None = None
 
 
 class Project(SchemaBaseModel):
+    id: str
     name: str
     url: str | None = None
     summary: str | None = None
     bullets: list[str] = Field(default_factory=list)
     technologies: list[str] = Field(default_factory=list)
-    display: DisplayConfig = Field(default_factory=DisplayConfig)
+    formatted: dict[str, dict[str, str]] | None = None
     notes: str | None = None
-    latex_overrides: dict[str, str] | None = None
 
 
 class Honor(SchemaBaseModel):
+    id: str
     title: str
     issuer: str | None = None
     location: str | None = None
     date: str | None = None
     summary: str | None = None
-    display: DisplayConfig = Field(default_factory=DisplayConfig)
     notes: str | None = None
 
 
 class Service(SchemaBaseModel):
+    id: str
     role: str
     organization: str
     location: str | None = None
     date: str | None = None
-    display: DisplayConfig = Field(default_factory=DisplayConfig)
     notes: str | None = None
 
 
 class Skill(SchemaBaseModel):
+    id: str
     category: str
     items: list[str]
-    display: DisplayConfig = Field(default_factory=DisplayConfig)
-    latex_overrides: dict[str, str] | None = None
+    formatted: dict[str, dict[str, str]] | None = None
+    notes: str | None = None
 
 
 class Grant(SchemaBaseModel):
+    id: str
     title: str
     funder: str
     role: str
@@ -102,15 +93,14 @@ class Grant(SchemaBaseModel):
     start: str | None = None
     end: str | None = None
     details: list[str] = Field(default_factory=list)
-    display: DisplayConfig = Field(default_factory=DisplayConfig)
     notes: str | None = None
 
 
 class Affiliation(SchemaBaseModel):
+    id: str
     organization: str
     role: str | None = None
     date: str | None = None
-    display: DisplayConfig = Field(default_factory=DisplayConfig)
     notes: str | None = None
 
 
@@ -120,18 +110,15 @@ class Summary(SchemaBaseModel):
 
 class PublicationRef(SchemaBaseModel):
     cite_key: str
-    display: DisplayConfig = Field(default_factory=DisplayConfig)
 
 
 class PresentationRef(SchemaBaseModel):
     cite_key: str
-    display: DisplayConfig = Field(default_factory=DisplayConfig)
 
 
 class ProfessionalData(SchemaBaseModel):
     schema_version: str
     personal_info: PersonalInfo
-    cv_config: CVConfig
     education: list[Education] = Field(default_factory=list)
     research_experience: list[Experience] = Field(default_factory=list)
     work_experience: list[Experience] = Field(default_factory=list)
@@ -154,6 +141,3 @@ class ProfessionalData(SchemaBaseModel):
         if value != "1.0":
             raise ValueError("schema_version must be '1.0'")
         return value
-
-
-_ = Education.model_rebuild()

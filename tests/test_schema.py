@@ -1,20 +1,24 @@
 # pyright: reportArgumentType=false, reportMissingImports=false, reportMissingParameterType=false, reportMissingTypeArgument=false, reportUnknownArgumentType=false, reportUnknownMemberType=false, reportUnknownParameterType=false, reportUnknownVariableType=false, reportUntypedFunctionDecorator=false, reportUnusedCallResult=false
 
 from pathlib import Path
+from typing import cast
 
 import pytest
 from pydantic import ValidationError
 from ruamel.yaml import YAML
 
 from scripts.lib.schema import (
-    CVConfig,
-    DisplayConfig,
+    Affiliation,
     Education,
     Experience,
     Grant,
+    Honor,
+    PersonalInfo,
     ProfessionalData,
+    Project,
     PublicationRef,
     PresentationRef,
+    Service,
     Skill,
     Summary,
 )
@@ -24,15 +28,28 @@ FIXTURES = Path(__file__).parent / "fixtures"
 
 
 def load_fixture(name: str) -> dict:
-    return YAML(typ="safe").load(FIXTURES / name)
+    return cast(dict, YAML(typ="safe").load(FIXTURES / name))
+
+
+def test_schema_version_1_0_validates():
+    data = ProfessionalData.model_validate(load_fixture("minimal_valid.yaml"))
+
+    assert data.schema_version == "1.0"
+
+
+def test_schema_version_must_be_1_0():
+    payload = load_fixture("minimal_valid.yaml")
+    payload["schema_version"] = "2.0"
+
+    with pytest.raises(ValidationError, match="schema_version must be '1.0'"):
+        ProfessionalData.model_validate(payload)
 
 
 def test_minimal_valid_fixture_validates():
     data = ProfessionalData.model_validate(load_fixture("minimal_valid.yaml"))
 
-    assert data.schema_version == "1.0"
     assert data.personal_info.name == "Vyas Ramasubramani"
-    assert len(data.education) == 1
+    assert data.education[0].id == "umich-phd"
     assert len(data.publications) == 1
 
 
@@ -54,100 +71,198 @@ def test_full_valid_fixture_validates_with_all_sections_populated():
     assert data.presentations
 
 
-def test_schema_version_must_be_1_0():
-    payload = load_fixture("minimal_valid.yaml")
-    payload["schema_version"] = "2.0"
-
-    with pytest.raises(ValidationError, match="schema_version must be '1.0'"):
-        ProfessionalData.model_validate(payload)
-
-
-def test_display_config_defaults_show_in_compact_and_extended_not_outdated():
-    display = DisplayConfig()
-
-    assert display.compact is True
-    assert display.extended is True
-    assert display.outdated is False
-
-
-def test_education_with_compact_override_validates():
+def test_education_dual_variant_fixture_validates_separate_entries():
     data = ProfessionalData.model_validate(load_fixture("education_dual_variant.yaml"))
 
-    education = data.education[0]
-
-    assert education.compact_override is not None
-    assert education.compact_override.degree == "Ph.D. in Chemical Engineering"
+    assert [entry.id for entry in data.education] == ["umich-phd", "umich-ms"]
 
 
-def test_education_compact_override_must_be_valid_education():
-    payload = load_fixture("education_dual_variant.yaml")
-    del payload["education"][0]["compact_override"]["institution"]
-
-    with pytest.raises(ValidationError):
-        ProfessionalData.model_validate(payload)
-
-
-def test_publication_ref_has_only_cite_key_and_display_fields():
-    fields = set(PublicationRef.model_fields)
-
-    assert fields == {"cite_key", "display"}
-
-
-def test_publication_ref_rejects_author_title_venue_fields():
-    with pytest.raises(ValidationError):
-        PublicationRef.model_validate(
-            {"cite_key": "paper", "author": "Author", "title": "Title", "venue": "Venue"}
-        )
-
-
-def test_presentation_ref_has_only_cite_key_and_display_fields():
-    fields = set(PresentationRef.model_fields)
-
-    assert fields == {"cite_key", "display"}
-
-
-def test_presentation_ref_rejects_author_title_venue_fields():
-    with pytest.raises(ValidationError):
-        PresentationRef.model_validate({"cite_key": "talk", "author": "Author"})
-
-
-@pytest.mark.parametrize(
-    "mode", ["selectedpubs", "all", "none", "combinepubs"]
-)
-def test_cv_config_citations_mode_accepts_valid_values(mode):
-    config = CVConfig(citations_mode=mode)
-
-    assert config.citations_mode == mode
-
-
-def test_cv_config_citations_mode_rejects_invalid_value():
-    with pytest.raises(ValidationError):
-        CVConfig(citations_mode="selected")
-
-
-def test_missing_required_personal_info_name_raises_validation_error():
+def test_invalid_missing_required_fixture_is_rejected():
     with pytest.raises(ValidationError):
         ProfessionalData.model_validate(load_fixture("invalid_missing_required.yaml"))
 
 
-def test_missing_required_education_institution_raises_validation_error():
+def test_education_id_field_is_required_and_first():
+    assert list(Education.model_fields)[0] == "id"
+    with pytest.raises(ValidationError):
+        Education.model_validate(
+            {
+                "institution": "Princeton University",
+                "degree": "B.S.E. in Chemical Engineering",
+                "area": "Chemical Engineering",
+                "start": "2009",
+                "end": "2013",
+                "location": "Princeton, NJ",
+            }
+        )
+
+
+def test_experience_id_field_is_required_and_first():
+    assert list(Experience.model_fields)[0] == "id"
+    with pytest.raises(ValidationError):
+        Experience.model_validate(
+            {
+                "organization": "NVIDIA",
+                "role": "Senior Software Engineer",
+                "start": "Mar 2020",
+                "end": "Present",
+                "location": "Santa Clara, CA",
+            }
+        )
+
+
+def test_project_id_field_is_required_and_first():
+    assert list(Project.model_fields)[0] == "id"
+    with pytest.raises(ValidationError):
+        Project.model_validate({"name": "signac framework"})
+
+
+@pytest.mark.parametrize(
+    ("model", "payload"),
+    [
+        (Honor, {"title": "Award"}),
+        (Service, {"role": "Reviewer", "organization": "Journal"}),
+        (Skill, {"category": "Languages", "items": ["Python"]}),
+        (Grant, {"title": "Grant", "funder": "NSF", "role": "PI"}),
+        (Affiliation, {"organization": "SIAM"}),
+    ],
+)
+def test_other_entry_models_require_id_as_first_field(model, payload):
+    assert list(model.model_fields)[0] == "id"
+    with pytest.raises(ValidationError):
+        model.model_validate(payload)
+
+
+def test_formatted_field_accepts_correct_structure():
+    project = Project.model_validate(
+        {
+            "id": "signac-framework",
+            "name": "signac framework",
+            "formatted": {"name": {"latex": "signac ({\\tiny github.com/glotzerlab/signac})"}},
+        }
+    )
+
+    assert project.formatted == {
+        "name": {"latex": "signac ({\\tiny github.com/glotzerlab/signac})"}
+    }
+
+
+@pytest.mark.parametrize(
+    "entry",
+    [
+        Education(
+            id="princeton-bse",
+            institution="Princeton University",
+            degree="B.S.E.",
+            area="Chemical Engineering",
+            start="2009",
+            end="2013",
+            location="Princeton, NJ",
+        ),
+        Experience(
+            id="nvidia-senior-swe",
+            organization="NVIDIA",
+            role="Senior Software Engineer",
+            start="Mar 2020",
+            end="Present",
+            location="Santa Clara, CA",
+        ),
+        Project(id="signac-framework", name="signac framework"),
+        Skill(id="languages", category="Languages", items=["Python"]),
+    ],
+)
+def test_formatted_field_is_none_by_default(entry):
+    assert entry.formatted is None
+
+
+def test_formatted_field_can_have_multiple_field_entries():
+    skill = Skill.model_validate(
+        {
+            "id": "languages",
+            "category": "Languages",
+            "items": ["Python", "C++"],
+            "formatted": {
+                "category": {"html": "Programming languages"},
+                "items": {"latex": "\\textsc{expert}: Python, C++"},
+            },
+        }
+    )
+
+    assert skill.formatted == {
+        "category": {"html": "Programming languages"},
+        "items": {"latex": "\\textsc{expert}: Python, C++"},
+    }
+
+
+def test_publication_ref_has_only_cite_key_and_rejects_display():
+    assert set(PublicationRef.model_fields) == {"cite_key"}
+    with pytest.raises(ValidationError):
+        PublicationRef.model_validate({"cite_key": "paper", "display": {"compact": True}})
+
+
+def test_presentation_ref_has_only_cite_key_and_rejects_display():
+    assert set(PresentationRef.model_fields) == {"cite_key"}
+    with pytest.raises(ValidationError):
+        PresentationRef.model_validate({"cite_key": "talk", "display": {"compact": True}})
+
+
+def test_professional_data_has_no_cv_config_field_and_rejects_it():
+    assert "cv_config" not in ProfessionalData.model_fields
     payload = load_fixture("minimal_valid.yaml")
-    del payload["education"][0]["institution"]
+    payload["cv_config"] = {"citations_mode": "selectedpubs"}
 
     with pytest.raises(ValidationError):
         ProfessionalData.model_validate(payload)
 
 
-def test_missing_required_publication_cite_key_raises_validation_error():
-    payload = load_fixture("minimal_valid.yaml")
-    del payload["publications"][0]["cite_key"]
+def test_notes_field_still_works():
+    honor = Honor(id="award", title="Award", notes="Internal note")
 
-    with pytest.raises(ValidationError):
-        ProfessionalData.model_validate(payload)
+    assert honor.notes == "Internal note"
+
+
+
+def test_summary_still_works():
+    summary = Summary(text="Computational scientist.")
+
+    assert summary.text == "Computational scientist."
+
+
+
+def test_personal_info_unchanged():
+    info = PersonalInfo(
+        name="Vyas Ramasubramani",
+        email="vyas.ramasubramani@gmail.com",
+        phone="(+1) 408-421-2162",
+        website="vyasr.com",
+        github="vyasr",
+        linkedin="vyas-ramasubramani",
+        location="Santa Clara, CA",
+    )
+
+    assert info.name == "Vyas Ramasubramani"
+    assert info.location == "Santa Clara, CA"
+
+
+@pytest.mark.parametrize("details", ["Minors: QCB", ["Minor: QCB", "Minor: CS"], None])
+def test_education_details_accepts_string_list_or_none(details):
+    education = Education(
+        id="princeton-bse",
+        institution="Princeton University",
+        degree="B.S.E. in Chemical Engineering",
+        area="Chemical Engineering",
+        start="2009",
+        end="2013",
+        location="Princeton, NJ",
+        details=details,
+    )
+
+    assert education.details == details
 
 
 def test_experience_bullets_defaults_to_empty_list():
     experience = Experience(
+        id="nvidia-senior-swe",
         organization="NVIDIA",
         role="Senior Software Engineer",
         start="Mar 2020",
@@ -158,24 +273,88 @@ def test_experience_bullets_defaults_to_empty_list():
     assert experience.bullets == []
 
 
-def test_display_config_outdated_defaults_to_false():
-    assert DisplayConfig().outdated is False
+def test_honor_issuer_is_optional():
+    honor = Honor(id="award", title="Award")
+
+    assert honor.issuer is None
 
 
-def test_skill_items_must_be_a_list():
-    with pytest.raises(ValidationError):
-        Skill.model_validate({"category": "Languages", "items": "Python, C++"})
 
-
-def test_grant_with_amount_none_validates():
-    grant = Grant(title="Grant", funder="NSF", role="PI", amount=None)
+def test_grant_amount_is_optional():
+    grant = Grant(id="grant", title="Grant", funder="NSF", role="PI")
 
     assert grant.amount is None
 
 
-def test_summary_text_is_required():
-    with pytest.raises(ValidationError):
-        Summary.model_validate({})
+
+def test_full_professional_data_with_all_sections_validates():
+    data = ProfessionalData(
+        schema_version="1.0",
+        personal_info=PersonalInfo(name="Name", email="name@example.com"),
+        education=[
+            Education(
+                id="edu",
+                institution="Institution",
+                degree="Degree",
+                area="Area",
+                start="2020",
+                end="2024",
+                location="City",
+            )
+        ],
+        research_experience=[
+            Experience(
+                id="research",
+                organization="Org",
+                role="Role",
+                start="2020",
+                end="2021",
+                location="City",
+            )
+        ],
+        work_experience=[
+            Experience(
+                id="work",
+                organization="Org",
+                role="Role",
+                start="2021",
+                end="2022",
+                location="City",
+            )
+        ],
+        skills=[Skill(id="skill", category="Languages", items=["Python"])],
+        projects=[Project(id="project", name="Project")],
+        honors=[Honor(id="honor", title="Honor")],
+        service_leadership=[Service(id="service", role="Role", organization="Org")],
+        teaching_experience=[
+            Experience(
+                id="teaching",
+                organization="Org",
+                role="Role",
+                start="2022",
+                end="2023",
+                location="City",
+            )
+        ],
+        grants=[Grant(id="grant", title="Grant", funder="Funder", role="PI")],
+        extracurricular=[
+            Experience(
+                id="extra",
+                organization="Org",
+                role="Role",
+                start="2023",
+                end="2024",
+                location="City",
+            )
+        ],
+        affiliations=[Affiliation(id="affiliation", organization="Org")],
+        wetlab_skills=[Skill(id="wetlab", category="Wet lab", items=["PCR"])],
+        summary=Summary(text="Summary"),
+        publications=[PublicationRef(cite_key="paper")],
+        presentations=[PresentationRef(cite_key="talk")],
+    )
+
+    assert data.publications[0].cite_key == "paper"
 
 
 def test_professional_data_accepts_empty_section_lists():
@@ -204,49 +383,14 @@ def test_professional_data_accepts_empty_section_lists():
     assert data.publications == []
 
 
-@pytest.mark.parametrize("details", ["Minors: QCB", ["Minor: QCB", "Minor: CS"], None])
-def test_education_details_accepts_string_list_or_none(details):
-    education = Education(
-        institution="Princeton University",
-        degree="B.S.E. in Chemical Engineering",
-        area="Chemical Engineering",
-        start="2009",
-        end="2013",
-        location="Princeton, NJ",
-        details=details,
-    )
-
-    assert education.details == details
+def test_skill_items_must_be_a_list():
+    with pytest.raises(ValidationError):
+        Skill.model_validate({"id": "languages", "category": "Languages", "items": "Python, C++"})
 
 
-def test_selected_publications_order_is_preserved():
-    data = ProfessionalData.model_validate(load_fixture("full_valid.yaml"))
-
-    assert data.cv_config.selected_publications == [
-        "Ramasubramani2020b",
-        "Ramasubramani2020",
-        "Dice_2019",
-    ]
-
-
-def test_project_latex_overrides_validate_as_string_mapping():
-    data = ProfessionalData.model_validate(load_fixture("full_valid.yaml"))
-
-    assert data.projects[0].latex_overrides == {
-        "name": "signac framework ({\\tiny github.com/glotzerlab/signac})"
-    }
-
-
-def test_display_tags_validate_on_full_fixture_entries():
-    data = ProfessionalData.model_validate(load_fixture("full_valid.yaml"))
-
-    assert data.honors[0].display.extended is False
-    assert data.honors[1].display.outdated is True
-
-
-def test_invalid_skill_items_in_fixture_is_rejected():
+def test_missing_required_publication_cite_key_raises_validation_error():
     payload = load_fixture("minimal_valid.yaml")
-    payload["skills"] = [{"category": "Languages", "items": "Python"}]
+    del payload["publications"][0]["cite_key"]
 
     with pytest.raises(ValidationError):
         ProfessionalData.model_validate(payload)
