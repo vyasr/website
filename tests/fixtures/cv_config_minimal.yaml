@@ -1,0 +1,8 @@
+schema_version: "1.0"
+citations:
+  mode: none
+  selected: []
+sections:
+  education:
+    entries:
+      - id: umich-phd

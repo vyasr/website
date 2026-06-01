@@ -1,0 +1,65 @@
+schema_version: "1.0"
+citations:
+  mode: selectedpubs
+  selected:
+    - Ramasubramani2020b
+    - Ramasubramani2020
+    - Dice_2019
+    - simon2019
+    - vyas_ramasubramani-proc-scipy-2018
+    - adorf2018
+    - ADORF2018220
+    - Sinha:2014aa
+sections:
+  education:
+    entries:
+      - id: umich-phd
+        display: [compact, extended]
+      - id: umich-ms
+        display: [extended]
+      - id: princeton-bse
+        display: [compact, extended]
+      - id: lynbrook-hs
+        display: [compact, extended]
+        outdated: true
+  research_experience:
+    entries:
+      - id: umich-glotzer-ra
+      - id: ucsd-igb-intern
+        outdated: true
+  work_experience:
+    entries:
+      - id: nvidia-senior-swe
+      - id: nvidia-swe
+        outdated: true
+  skills:
+    entries:
+      - id: skills-languages
+      - id: skills-tools
+  projects:
+    entries:
+      - id: project-freud
+      - id: project-signac
+  honors:
+    entries:
+      - id: honor-beyster
+      - id: honor-rackham
+  service_leadership:
+    entries:
+      - id: service-scipy-proceedings
+  teaching_experience:
+    entries:
+      - id: teaching-che344
+  grants:
+    entries:
+      - id: grant-nsf-1
+  extracurricular:
+    entries:
+      - id: extra-tennis
+        outdated: true
+  affiliations:
+    entries:
+      - id: affil-acs
+  wetlab_skills:
+    entries:
+      - id: wetlab-microbio
