@@ -69,7 +69,7 @@ def read_source(path: Path) -> str:
 
 def display_from_entry(entry: dict[str, str], content: str) -> DisplayInfo:
     display = determine_display_context(entry.get("_raw", "").splitlines(), content.splitlines())
-    return {"compact": display["compact"], "extended": display["extended"], "outdated": display["outdated"]}
+    return {"compact": display["compact"], "extended": display["extended"]}
 
 
 def clean(raw: str) -> tuple[str, str | None]:
@@ -235,7 +235,7 @@ def migrate_education(used_ids: set[str]) -> tuple[list[Education], list[Display
             date=date_parts[index] if index < len(date_parts) else full_entry["arg4"],
         )
         if education.id == "umich-ms":
-            display = {"compact": False, "extended": True, "outdated": False}
+            display = {"compact": False, "extended": True}
         migrated.append(education)
         displays.append(display)
     for entry in entries[2:]:
@@ -442,7 +442,7 @@ def make_personal_info(cv_tex: str) -> PersonalInfo:
 def section_config(entries: Sequence[EntryWithID], displays: Sequence[DisplayInfo]) -> SectionConfig:
     return SectionConfig(
         entries=[
-            EntryConfig(id=str(entry.id), display=display_modes(display), outdated=display["outdated"])
+            EntryConfig(id=str(entry.id), display=display_modes(display))
             for entry, display in zip(entries, displays, strict=True)
         ]
     )
