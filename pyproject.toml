@@ -10,6 +10,7 @@ dependencies = [
     "ruamel.yaml",
     "pylatexenc",
     "bibtexparser>=2.0.0b9",
+    "professional-data",
 ]
 
 [project.optional-dependencies]

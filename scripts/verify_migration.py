@@ -17,7 +17,7 @@ from scripts.lib.latex_parser import (
     extract_cvskill,
     extract_selected_publications,
 )
-from scripts.lib.schema import ProfessionalData
+from professional_data.schema import ProfessionalData
 
 # Mapping of YAML section -> (tex filename, extraction function, macro type)
 SECTION_SOURCE_MAP: dict[str, tuple[str, str]] = {

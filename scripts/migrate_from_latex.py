@@ -25,7 +25,7 @@ from scripts.lib.latex_parser import (
     extract_selected_publications,
     normalize_text,
 )
-from scripts.lib.schema import (
+from professional_data.schema import (
     Affiliation,
     Education,
     Experience,
