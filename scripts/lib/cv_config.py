@@ -14,7 +14,6 @@ class EntryConfig(CVConfigBase):
     display: list[Literal["compact", "extended"]] = Field(
         default_factory=lambda: ["compact", "extended"]
     )
-    outdated: bool = False
 
 
 class SectionConfig(CVConfigBase):

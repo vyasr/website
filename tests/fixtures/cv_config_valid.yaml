@@ -21,17 +21,14 @@ sections:
         display: [compact, extended]
       - id: lynbrook-hs
         display: [compact, extended]
-        outdated: true
   research_experience:
     entries:
       - id: umich-glotzer-ra
       - id: ucsd-igb-intern
-        outdated: true
   work_experience:
     entries:
       - id: nvidia-senior-swe
       - id: nvidia-swe
-        outdated: true
   skills:
     entries:
       - id: skills-languages
@@ -56,7 +53,6 @@ sections:
   extracurricular:
     entries:
       - id: extra-tennis
-        outdated: true
   affiliations:
     entries:
       - id: affil-acs

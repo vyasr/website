@@ -74,7 +74,6 @@ def test_entry_config_defaults():
     entry = EntryConfig(id="umich-phd")
 
     assert entry.display == ["compact", "extended"]
-    assert entry.outdated is False
 
 
 def test_entry_config_compact_only():
@@ -87,12 +86,6 @@ def test_entry_config_extended_only():
     entry = EntryConfig.model_validate({"id": "umich-ms", "display": ["extended"]})
 
     assert entry.display == ["extended"]
-
-
-def test_entry_config_outdated_true():
-    entry = EntryConfig.model_validate({"id": "lynbrook-hs", "outdated": True})
-
-    assert entry.outdated is True
 
 
 def test_entry_config_missing_id_rejects():
