@@ -66,3 +66,5 @@ As part of my PhD research I became actively involved in the development of a gr
 </div>
 
 In graduate school my colleague Simon Adorf and I published [a paper](https://ieeexplore.ieee.org/document/8558687) on this topic in [Computing in Science & Engineering](https://www.computer.org/csdl/magazine/cs), and more recently we wrote a [blog post](https://bssw.io/blog_posts/the-lazy-approach-to-developing-scientific-research-software) providing a high level discussion of our approach. With this mentality, I also developed a few small, self-contained Python packages with clear applications, the [rowan](http://rowan.readthedocs.io/) package for quaternion manipulation and the [coxeter](http://coxeter.readthedocs.io/) package for working with geometric data, particularly polytopes in two and three dimensions.
+
+I was also a core developer for [HOOMD-blue](http://glotzerlab.engin.umich.edu/hoomd-blue/), a high-performance particle simulation engine that scales from single CPUs to leadership-class GPU supercomputers and is one of NVIDIA's official HPC benchmarks.
