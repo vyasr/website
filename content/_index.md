@@ -13,7 +13,7 @@ hideTitle: true
       also contributed extensively to other parts of the RAPIDS stack,
       including cuML and cuGraph. I am an experienced Python, C, and C++ and
       CUDA developer, with additional experience working with a range of other
-      programming languages, including Java, Rust, and Go. I also have
+      programming languages, including Java and Rust. I also have
       extensive experience with build systems in various programming languages,
       with a special focus on CMake and various build backends for Python.
     </p>

@@ -4,6 +4,23 @@ title = "Vyas Ramasubramani"
 enableRobotsTXT = true
 ignoreLogs = ["warning-goldmark-raw-html"]
 
+[module]
+  [[module.mounts]]
+    source = "content"
+    target = "content"
+  [[module.mounts]]
+    source = "static"
+    target = "static"
+  [[module.mounts]]
+    source = "layouts"
+    target = "layouts"
+  [[module.mounts]]
+    source = "archetypes"
+    target = "archetypes"
+  [[module.mounts]]
+    source = "data/professional.yaml"
+    target = "data/professional.yaml"
+
 [markup]
   [markup.goldmark]
     [markup.goldmark.renderer]

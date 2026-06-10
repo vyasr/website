@@ -1,0 +1,6 @@
+{{ define "main" }}
+  <article class="content">
+    <h1 class="page-title">{{ .Title }}</h1>
+    {{ .Site.Data.professional.bios.short | markdownify }}
+  </article>
+{{ end }}

@@ -3,4 +3,4 @@
 	url = https://github.com/vyasr/Awesome-CV.git
 [submodule "data"]
 	path = data
-	url = /Users/vyasr/local/mycv
+	url = git@github.com:vyasr/cv_data.git
