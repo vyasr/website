@@ -66,6 +66,7 @@ jobs:
           rsync -avz --delete \
             --exclude='.htaccess' \
             --exclude='.well-known' \
+            --exclude='files/cv.pdf' \
             -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
             public/ \
             ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}
