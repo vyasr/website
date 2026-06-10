@@ -1,0 +1,69 @@
+# GitHub Actions: Build Hugo site and deploy to Bluehost via rsync
+#
+# Required GitHub Repository Secrets:
+#
+#   SSH_PRIVATE_KEY   - Private key for SSH access to the deploy server.
+#                       Generate a dedicated deploy key pair:
+#                         ssh-keygen -t ed25519 -C "github-actions-deploy" -f deploy_key
+#                       Add the PUBLIC key (deploy_key.pub) to the server's
+#                       ~/.ssh/authorized_keys file.
+#                       Paste the PRIVATE key (deploy_key) content into this secret.
+#
+#   DEPLOY_HOST       - SSH host address (e.g. 129.121.65.158)
+#
+#   DEPLOY_USER       - SSH username (e.g. wkngyomy)
+#
+#   DEPLOY_PATH       - Absolute path to the website document root on the server.
+#                       MUST include a trailing slash.
+#                       Example: /home/wkngyomy/public_html/website_8a95d627/
+#                       WARNING: rsync will sync INTO this directory. Ensure this
+#                       is the correct path — files outside it are never touched.
+#
+
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+env:
+  HUGO_VERSION: "0.155.2"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@2752ce1d29631191ea3f27c23495fa06139a5b78  # v3
+        with:
+          hugo-version: ${{ env.HUGO_VERSION }}
+          extended: true
+
+      - name: Build
+        run: hugo --minify
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy via rsync
+        run: |
+          rsync -avz --delete \
+            --exclude='.htaccess' \
+            --exclude='.well-known' \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
+            public/ \
+            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}
