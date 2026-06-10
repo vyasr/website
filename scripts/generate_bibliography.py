@@ -222,15 +222,15 @@ def build_page(source_path, title, allow_types, allow_authors, output_path):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--cv-root", required=True)
+    parser.add_argument("--data-root", required=True)
     parser.add_argument("--output-root", required=True)
     args = parser.parse_args()
 
-    cv_root = Path(args.cv_root)
+    data_root = Path(args.data_root)
     output_root = Path(args.output_root)
 
-    publications_bib = cv_root / "mycv" / "Publications.bib"
-    presentations_bib = cv_root / "mycv" / "Presentations.bib"
+    publications_bib = data_root / "Publications.bib"
+    presentations_bib = data_root / "Presentations.bib"
 
     allow_publications = {"article", "inproceedings"}
     allow_presentations = {"inproceedings", "conference"}

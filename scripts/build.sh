@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-python3 scripts/generate_bibliography.py --cv-root external/awesome-cv --output-root content
+python3 scripts/generate_bibliography.py --data-root external/cv-data --output-root content
 
 if command -v xelatex >/dev/null 2>&1; then
   if command -v biber >/dev/null 2>&1; then

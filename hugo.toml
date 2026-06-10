@@ -18,7 +18,7 @@ ignoreLogs = ["warning-goldmark-raw-html"]
     source = "archetypes"
     target = "archetypes"
   [[module.mounts]]
-    source = "data/professional.yaml"
+    source = "external/cv-data/professional.yaml"
     target = "data/professional.yaml"
 
 [markup]
