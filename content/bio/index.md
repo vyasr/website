@@ -1,4 +1,0 @@
----
-title: "Bio"
-slug: "bio"
----

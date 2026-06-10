@@ -17,9 +17,6 @@ ignoreLogs = ["warning-goldmark-raw-html"]
   [[module.mounts]]
     source = "archetypes"
     target = "archetypes"
-  [[module.mounts]]
-    source = "external/cv-data/professional.yaml"
-    target = "data/professional.yaml"
 
 [markup]
   [markup.goldmark]
@@ -56,10 +53,6 @@ ignoreLogs = ["warning-goldmark-raw-html"]
     name = "CV"
     url = "/cv/"
     weight = 40
-  [[menu.main]]
-    name = "Bio"
-    url = "/bio/"
-    weight = 45
 
 [params]
   description = "Computational scientist and software developer."
