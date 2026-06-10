@@ -3,6 +3,19 @@ title: "Presentations"
 hideTitle: true
 ---
 
+## 2026
+
+- Vyas Ramasubramani "What Python Developers Need to Know About Hardware: A Practical Guide to GPU Memory, Kernel Scheduling, and Execution Models." PyCon 2026
+- Vyas Ramasubramani, Jonathan Dekhtiar "Best Practices in Building and Packaging CUDA Python Libraries." NVIDIA 2026
+
+## 2025
+
+- Vyas Ramasubramani "Accelerated DataFrames for all: Bringing GPU acceleration to pandas and Polars." Scientific Computing with Python 2025
+
+## 2024
+
+- Vyas Ramasubramani, Rick Ratzel "No-Code-Change GPU Acceleration for Your Pandas and NetworkX Workflows." Scientific Computing with Python 2024
+
 ## 2019
 
 - Bradley D. Dice, Vyas Ramasubramani, Eric S. Harper, Matthew P. Spellings, Joshua A. Anderson, Sharon C. Glotzer "Freud: Powerful particle simulation analysis tools for machine learning and materials design." Materials Research Society 2019
