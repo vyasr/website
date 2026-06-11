@@ -1,0 +1,22 @@
+{{ define "main" }}
+  <section class="blog-list">
+    <h1 class="page-title">Blog</h1>
+    {{ range .Pages.ByDate.Reverse }}
+      <article class="blog-entry">
+        <h2 class="blog-entry-title">
+          <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+        </h2>
+        <div class="blog-entry-meta">
+          <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+          {{ with .Params.tags }}
+            <span class="tag-list">
+              {{ range . }}
+                <a class="tag-pill" href="{{ "/tags/" | relURL }}{{ . | urlize }}/">{{ . }}</a>
+              {{ end }}
+            </span>
+          {{ end }}
+        </div>
+      </article>
+    {{ end }}
+  </section>
+{{ end }}
