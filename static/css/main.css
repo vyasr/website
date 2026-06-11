@@ -375,3 +375,117 @@ img {
     grid-template-columns: 1fr;
   }
 }
+
+/* =============================================
+   Blog list page
+   ============================================= */
+
+.blog-list {
+  padding: 0;
+}
+
+.blog-entry {
+  border-bottom: 1px solid var(--border-color);
+  padding: 24px 0;
+}
+
+.blog-entry:first-child {
+  padding-top: 0;
+}
+
+.blog-entry:last-child {
+  border-bottom: none;
+}
+
+.blog-entry-title {
+  font-family: "Roboto Slab", "Times New Roman", serif;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: var(--text-color);
+}
+
+.blog-entry-meta {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: var(--muted-color);
+  font-size: 14px;
+  margin: 0;
+}
+
+/* =============================================
+   Tag pills
+   ============================================= */
+
+.tag-list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tag-pill {
+  display: inline-block;
+  background: #f0f0f0;
+  color: var(--muted-color);
+  border-radius: 3px;
+  padding: 2px 8px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.tag-pill:hover {
+  background: #e0e0e0;
+  text-decoration: none;
+}
+
+/* =============================================
+   Blog single post
+   ============================================= */
+
+.blog-post-meta {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: var(--muted-color);
+  font-size: 14px;
+  margin: 0 0 24px;
+}
+
+/* =============================================
+   Note meta
+   ============================================= */
+
+.note-meta {
+  color: var(--muted-color);
+  font-size: 14px;
+  margin: 0 0 24px;
+}
+
+/* =============================================
+   Blog responsive adjustments
+   ============================================= */
+
+@media (max-width: 640px) {
+  .blog-entry {
+    padding: 16px 0;
+  }
+
+  .blog-entry-title {
+    font-size: 18px;
+  }
+
+  .tag-list {
+    gap: 4px;
+  }
+
+  .blog-entry-meta,
+  .blog-post-meta {
+    gap: 6px;
+  }
+}
