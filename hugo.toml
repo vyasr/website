@@ -23,7 +23,6 @@ ignoreLogs = ["warning-goldmark-raw-html"]
 [permalinks]
   page = "/:slug/"
   blog = "/blog/:slug/"
-  notes = "/notes/:contentbasename/"
 
 [taxonomies]
   tag = "tags"
