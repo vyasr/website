@@ -6,3 +6,4 @@ static/files/
 __pycache__/
 *.egg-info/
 keys
+external/awesome-cv/
