@@ -1,0 +1,4 @@
+python-frontmatter
+requests
+pytest
+responses
