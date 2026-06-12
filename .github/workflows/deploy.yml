@@ -25,6 +25,13 @@ name: Build and Deploy
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      content_file:
+        description: "Path to content file to post (e.g. content/blog/my-post/index.md)"
+        required: false
+        default: ""
+        type: string
 
 concurrency:
   group: deploy
@@ -70,3 +77,71 @@ jobs:
             -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
             public/ \
             ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}
+
+  linkedin-post:
+    runs-on: ubuntu-latest
+    needs: [build-and-deploy]
+    if: needs.build-and-deploy.result == 'success'
+    env:
+      LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+      LINKEDIN_AUTHOR_URN: ${{ secrets.LINKEDIN_AUTHOR_URN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065  # v5
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Post new blog content to LinkedIn
+        run: |
+          # Handle first push (no parent commit)
+          if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+            CHANGED_FILES=$(git diff-tree --no-commit-id -r --name-only HEAD | grep '^content/blog/' || true)
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.content_file }}" ]; then
+            CHANGED_FILES="${{ inputs.content_file }}"
+          else
+            CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^content/blog/' || true)
+          fi
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No blog content changes detected."
+            exit 0
+          fi
+
+          POSTED=0
+          while IFS= read -r file; do
+            [ -z "$file" ] && continue
+            [ ! -f "$file" ] && continue
+            echo "Processing: $file"
+            python scripts/post_to_linkedin.py \
+              --content-file "$file" \
+              --state-file .linkedin_state.json
+            EXIT_CODE=$?
+            if [ $EXIT_CODE -eq 0 ]; then
+              POSTED=$((POSTED + 1))
+            elif [ $EXIT_CODE -eq 1 ]; then
+              echo "ERROR: LinkedIn token expired. Update LINKEDIN_ACCESS_TOKEN secret."
+              exit 1
+            fi
+          done <<< "$CHANGED_FILES"
+
+          echo "Processed $POSTED file(s)."
+
+      - name: Commit updated LinkedIn state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .linkedin_state.json
+          if git diff --staged --quiet; then
+            echo "No state changes to commit."
+          else
+            git commit -m "chore: update linkedin state [skip ci]"
+            git push
+          fi
