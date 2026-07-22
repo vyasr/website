@@ -5,11 +5,28 @@ hideTitle: true
 
 I spend most of my time working in Python, C++, and CUDA, with a healthy dose of Rust. I've previously worked in a variety of other languages including Java, JavaScript, PHP, SQL, and Go.
 
-Most recently, I gave a talk at PyCon 2026 on the basics of GPU computing for Python developers and data/AI scientists. You can view the slides below:
+Most recently, I gave a talk at PyCon 2026 on the basics of GPU computing for Python developers and data/AI scientists:
 
-<div class="cv-embed">
-  <iframe src="PyCon2026.pdf" title="PyCon 2026 Talk" loading="lazy" style="height: 600px;"></iframe>
+<div class="video-grid" style="grid-template-columns: 1fr; max-width: 50%; margin-left: auto; margin-right: auto;">
+  <div class="video-card">
+    <div class="video-embed">
+      <iframe
+        src="https://www.youtube.com/embed/P8P4lHzlUMU"
+        title="PyCon 2026 Talk"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </div>
 </div>
+
+
+## Projects
+
+### cuDF & DataFrames
+
+My primary work at NVIDIA is on [cuDF](https://github.com/rapidsai/cudf/), a GPU-accelerated DataFrame library built on [Apache Arrow](https://github.com/apache/arrow). We've built accelerated backends for both [pandas](https://github.com/pandas-dev/pandas) and [Polars](https://github.com/pola-rs/polars), enabling users to speed up their existing DataFrame workflows on GPUs with minimal code changes.
 
 <div class="video-grid">
   <div class="video-card">
@@ -35,12 +52,6 @@ Most recently, I gave a talk at PyCon 2026 on the basics of GPU computing for Py
     </div>
   </div>
 </div>
-
-## Projects
-
-### cuDF & DataFrames
-
-My primary work at NVIDIA is on [cuDF](https://github.com/rapidsai/cudf/), a GPU-accelerated DataFrame library built on [Apache Arrow](https://github.com/apache/arrow). We've built accelerated backends for both [pandas](https://github.com/pandas-dev/pandas) and [Polars](https://github.com/pola-rs/polars), enabling users to speed up their existing DataFrame workflows on GPUs with minimal code changes.
 
 ### RAPIDS
 
